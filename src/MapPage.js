@@ -24,6 +24,29 @@ function MapPage({ onBack }) {
       return Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY);
     }
 
+    function clamp(val, min, max) {
+      return Math.min(Math.max(val, min), max);
+    }
+
+    function updateTransform() {
+      // Получаем размеры контейнера и картинки
+      const containerRect = container.getBoundingClientRect();
+      const imgWidth = img.naturalWidth * scale;
+      const imgHeight = img.naturalHeight * scale;
+
+      // Ограничиваем смещение по X (чтобы нельзя было уходить в стороны)
+      const maxX = 0;
+      const minX = containerRect.width - imgWidth;
+      posX = clamp(posX, minX > 0 ? 0 : minX, maxX);
+
+      // Ограничиваем смещение по Y (карта не уходит вверх)
+      const maxY = 0;
+      const minY = containerRect.height - imgHeight;
+      posY = clamp(posY, minY > 0 ? 0 : minY, maxY);
+
+      img.style.transform = `translate(${posX}px, ${posY}px) scale(${scale})`;
+    }
+
     // ===== TOUCH =====
     container.addEventListener("touchstart", e => {
       if (e.touches.length === 1) {
@@ -49,7 +72,7 @@ function MapPage({ onBack }) {
           const newDist = distance(e.touches);
           scale = Math.min(4, Math.max(0.8, (newDist / initialDistance) * lastScale));
         }
-        img.style.transform = `translate(${posX}px, ${posY}px) scale(${scale})`;
+        updateTransform();
       },
       { passive: false }
     );
@@ -69,7 +92,7 @@ function MapPage({ onBack }) {
       if (!isDragging) return;
       posX = e.clientX - lastX;
       posY = e.clientY - lastY;
-      img.style.transform = `translate(${posX}px, ${posY}px) scale(${scale})`;
+      updateTransform();
     });
 
     window.addEventListener("mouseup", () => {
@@ -80,7 +103,7 @@ function MapPage({ onBack }) {
     container.addEventListener("wheel", e => {
       const delta = -e.deltaY * 0.001;
       scale = Math.max(0.8, Math.min(4, scale + delta));
-      img.style.transform = `translate(${posX}px, ${posY}px) scale(${scale})`;
+      updateTransform();
     });
   }, []);
 
