@@ -4,7 +4,7 @@
 body, html, #root {
   height: 100%;
   margin: 0;
-  font-family: 'Press Start 2P', cursive;
+  font-family: 'Press Start 2P';
   background-color: #000000;
   display: flex;
   justify-content: center;
@@ -33,7 +33,7 @@ body, html, #root {
 .start-button {
   margin-top: 20px;
   padding: 12px 24px;
-  font-family: 'Press Start 2P', cursive;
+  font-family: 'Press Start 2P';
   font-size: clamp(16px, 4vw, 32px);
   color: #FFD700; /* такой же цвет, как у заголовка */
   background: none;
