@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import "./InventoryPage.css";
+import { API_BASE_URL } from "./constants";
 
 function InventoryPage({ userId, onBack }) {
   const [inventoryData, setInventoryData] = useState(null);
@@ -9,7 +10,7 @@ function InventoryPage({ userId, onBack }) {
     const loadInventory = async () => {
       try {
         const response = await fetch(
-          `https://fastapi-python-boilerplate-six-self.vercel.app/api/users/${userId}/`
+          `${API_BASE_URL}/users/${userId}/`
         );
         if (!response.ok) throw new Error("Failed to load inventory");
 

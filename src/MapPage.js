@@ -1,6 +1,5 @@
 import "./MapPage.css";
-
-const MAP_URL = "https://dsrljeikegnnkujbjitp.supabase.co/storage/v1/object/sign/questwalk_inventory/map.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV81MTQ4YTcwMS0xN2YzLTQ1ZTEtYjA2ZC00M2Q0OGU3ZDYyMDgiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJxdWVzdHdhbGtfaW52ZW50b3J5L21hcC5wbmciLCJpYXQiOjE3NjM4MTI4NDcsImV4cCI6MTU5NDQzODEyODQ3fQ.FuGXBGMCXvzm-GeGrrtCKtNjuj1V6nuS4mxkDasG1QQ";
+import { MAP_IMAGE_URL } from "./constants";
 
 function MapPage({ onBack }) {
   return (
@@ -11,7 +10,7 @@ function MapPage({ onBack }) {
 
       <div className="map-page__content">
         <img 
-          src={MAP_URL} 
+          src={MAP_IMAGE_URL} 
           alt="Quest Map" 
           className="map-page__image"
         />
