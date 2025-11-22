@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import "./MainPage.css";
-import { API_BASE_URL } from "./constants";
 
 function MainPage({ userId, onInventoryClick, onMapClick }) {
   const [userData, setUserData] = useState(null);
@@ -10,7 +9,7 @@ function MainPage({ userId, onInventoryClick, onMapClick }) {
     const loadUser = async () => {
       try {
         const response = await fetch(
-          `${API_BASE_URL}/users/${userId}`
+          `https://fastapi-python-boilerplate-six-self.vercel.app/api/users/${userId}`
         );
 
         if (!response.ok) throw new Error("User not found");
@@ -22,19 +21,12 @@ function MainPage({ userId, onInventoryClick, onMapClick }) {
       }
     };
 
-    if (userId) {
-      loadUser();
-    }
+    loadUser();
   }, [userId]);
 
   if (error) return (
     <div className="main-page">
       <div className="main-page__error">Error: {error}</div>
-      <div className="main-page__buttons">
-        <button className="main-page__button" onClick={() => window.location.reload()}>
-          RETRY
-        </button>
-      </div>
     </div>
   );
   
