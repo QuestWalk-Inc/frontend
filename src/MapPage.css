@@ -45,21 +45,34 @@
   height: 100vh;
   padding: 0;
   box-sizing: border-box;
+
+  /* чтобы можно было скроллить карту */
   overflow: auto;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   -webkit-overflow-scrolling: touch;
+
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+
+  background: #000;
 }
 
+/* ===== карта НЕ растягивается и НЕ меняет пропорции ===== */
 .map-page__image {
-  width: 100vw;
-  height: 100vh;
-  object-fit: contain;
+  width: auto;
+  height: auto;
+  max-width: none;
+  max-height: none;
+
   image-rendering: pixelated;
   image-rendering: -moz-crisp-edges;
   image-rendering: crisp-edges;
+
   display: block;
+
+  /* УВЕЛИЧЕНИЕ КАРТЫ — можно менять scale */
+  transform: scale(1.8);
+  transform-origin: top left;
 }
 
 /* ===== buttons area ===== */
@@ -135,4 +148,3 @@
   .map-page__header { padding: 8px 12px; }
   .map-page__buttons { padding: 8px; }
 }
-
