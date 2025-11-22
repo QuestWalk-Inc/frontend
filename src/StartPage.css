@@ -1,8 +1,5 @@
-/* App.css */
-
-/* Фон: полностью черный */
-body, html, #root {
-  height: 100%;
+.start-page {
+  min-height: 100vh;
   margin: 0;
   font-family: 'Press Start 2P', cursive;
   background-color: #000000;
@@ -13,29 +10,26 @@ body, html, #root {
   text-align: center;
 }
 
-/* Стиль заголовка */
-.title {
-  color: #FFD700; /* темно-желтый */
+.start-page__title {
+  color: #FFD700;
   font-size: clamp(24px, 8vw, 72px);
   text-shadow:
     0.2vw 0.2vw 0 #CCAA00,
     0.4vw 0.4vw 0 #998800,
     0.6vw 0.6vw 0 #665500;
-  transition: transform 0.6s ease; /* плавное смещение */
+  transition: transform 0.6s ease;
 }
 
-/* Смещение заголовка вверх при появлении кнопки */
-.title-up {
+.start-page__title-up {
   transform: translateY(-50px);
 }
 
-/* Стиль кнопки */
-.start-button {
+.start-page__button {
   margin-top: 20px;
   padding: 12px 24px;
   font-family: 'Press Start 2P', cursive;
   font-size: clamp(16px, 4vw, 32px);
-  color: #FFD700; /* такой же цвет, как у заголовка */
+  color: #FFD700;
   background: none;
   border: 3px solid #FFD700;
   cursor: pointer;
@@ -46,35 +40,33 @@ body, html, #root {
   transition: transform 0.6s ease, opacity 0.6s ease;
   opacity: 0;
   transform: translateY(20px);
-  animation: button-appear 0.6s forwards;
+  animation: start-page-button-appear 0.6s forwards;
 }
 
-/* Анимация появления кнопки */
-@keyframes button-appear {
+@keyframes start-page-button-appear {
   to {
     opacity: 1;
     transform: translateY(0);
   }
 }
 
-/* Медиазапросы для мобильных экранов */
 @media (max-width: 480px) {
-  .title {
+  .start-page__title {
     font-size: 24px;
     text-shadow: 1px 1px 0 #CCAA00, 2px 2px 0 #998800, 3px 3px 0 #665500;
   }
-  .start-button {
+  .start-page__button {
     font-size: 16px;
     padding: 8px 16px;
   }
 }
 
 @media (min-width: 1200px) {
-  .title {
+  .start-page__title {
     font-size: 72px;
     text-shadow: 2px 2px 0 #CCAA00, 4px 4px 0 #998800, 6px 6px 0 #665500;
   }
-  .start-button {
+  .start-page__button {
     font-size: 32px;
     padding: 16px 32px;
   }

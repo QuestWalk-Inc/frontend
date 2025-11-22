@@ -1,0 +1,221 @@
+/* ======= Global fixes: prevent browser scrollbars, make layout adaptive ======= */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  /* запрет горизонтальной прокрутки страницы */
+  overflow-x: hidden;
+  /* не показывать системные полосы прокрутки (скроет визуально) */
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  display: none; /* Safari and Chrome */
+}
+
+/* ===== main page ===== */
+.main-page {
+  /* использую height вместо min-height, чтобы гарантировать 100vh и предсказуемость */
+  height: 100vh;
+  margin: 0;
+  padding: clamp(12px, 2.5vw, 20px);
+  font-family: 'Press Start 2P', cursive;
+  background-color: #000000;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+
+  /* если внутренности превышают — прокрутка только внутри контейнера,
+     но системные полосы видимыми не будут (скрыты глобально выше) */
+  overflow: hidden;
+}
+
+/* Внутренняя область, которая при необходимости может прокручиваться
+   (оставляет header и distance фиксированными) */
+.main-page__inner {
+  /* добавьте этот элемент внутри разметки:
+     <div class="main-page__inner">...основной контент...</div>
+     если не хотите — можно применить на .main-page__buttons вместо него */
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  padding: 0;
+  min-height: 0; /* важно для корректной внутренней прокрутки в flex */
+  overflow: auto; /* скрытый глобально скроллбар, но прокрутка возможна */
+}
+
+/* скрываем скроллбар для внутреннего контейнера в браузерах */
+.main-page__inner::-webkit-scrollbar { display: none; }
+.main-page__inner { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* ===== header ===== */
+.main-page__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 100%;
+  padding: clamp(10px, 2vw, 20px);
+}
+
+/* ===== level / health ===== */
+.main-page__level {
+  color: #FFD700;
+  font-size: clamp(12px, 2vw, 18px);
+  line-height: 1.5;
+}
+
+.main-page__health {
+  color: #FFFFFF;
+  font-size: clamp(12px, 2vw, 18px);
+  line-height: 1.5;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.main-page__heart {
+  color: #FF0000;
+  font-size: clamp(12px, 2vw, 18px);
+}
+
+/* ===== buttons area ===== */
+.main-page__buttons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 0 1 auto;
+  gap: clamp(20px, 4vw, 40px);
+  width: 100%;
+  max-width: 900px; /* не даст растягиваться за экран */
+  padding-inline: clamp(8px, 4vw, 20px);
+  box-sizing: border-box;
+}
+
+/* кнопки — адаптивные, не задаём фиксированных значений, используем clamp */
+.main-page__button {
+  font-family: 'Press Start 2P', cursive;
+  background-color: transparent;
+  color: #FFFFFF;
+  border: clamp(2px, 0.4vw, 4px) solid #FFD700;
+  padding: clamp(10px, 2vw, 18px) clamp(20px, 5vw, 50px);
+  font-size: clamp(10px, 1.8vw, 16px);
+  cursor: pointer;
+  transition: all 0.12s ease;
+  min-width: clamp(120px, 40%, 300px);
+  width: 100%;
+  max-width: 320px;
+  box-sizing: border-box;
+}
+
+/* Hover/Active */
+.main-page__button:hover { background-color: rgba(255, 215, 0, 0.08); }
+.main-page__button:active { transform: translateY(1px) scale(0.995); }
+
+/* ===== distance (фиксирован снизу, не должен вызывать горизонтальную прокрутку) ===== */
+.main-page__distance {
+  color: #FFD700;
+  font-size: clamp(12px, 2vw, 18px);
+  text-align: center;
+  padding: clamp(10px, 2.5vw, 20px);
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(100% - 40px);
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* ===== loading / error ===== */
+.main-page__loading {
+  color: #FFD700;
+  font-size: clamp(16px, 3vw, 24px);
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+  animation: main-page-loading-pulse 1.5s ease-in-out infinite;
+}
+
+.main-page__error {
+  color: #FF0000;
+  font-size: clamp(14px, 2.5vw, 20px);
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+}
+
+@keyframes main-page-loading-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+/* ===== Responsive tweaks (оставил ваши правила, слегка подправил отступы) ===== */
+/* Extra small devices (phones, 360px and down) */
+@media (max-width: 360px) {
+  .main-page { padding: 8px; }
+  .main-page__header { padding: 8px; }
+  .main-page__level,
+  .main-page__health,
+  .main-page__distance { font-size: 10px; }
+  .main-page__button { font-size: 10px; padding: 8px 16px; min-width: 110px; }
+  .main-page__buttons { gap: 12px; }
+}
+
+/* Small devices (phones, 480px and down) */
+@media (max-width: 480px) {
+  .main-page { padding: 12px; }
+  .main-page__header { padding: 12px; }
+  .main-page__level,
+  .main-page__health,
+  .main-page__distance { font-size: 12px; }
+  .main-page__button { font-size: 12px; padding: 10px 22px; min-width: 140px; }
+  .main-page__buttons { gap: 16px; }
+}
+
+/* Medium devices (tablets, 768px and down) */
+@media (max-width: 768px) {
+  .main-page__level,
+  .main-page__health,
+  .main-page__distance { font-size: 14px; }
+  .main-page__button { font-size: 13px; padding: 12px 30px; min-width: 160px; }
+}
+
+/* Large devices (desktops, 1024px and down) */
+@media (max-width: 1024px) {
+  .main-page__header { padding: 18px; }
+  .main-page__buttons { gap: 24px; }
+}
+
+/* Extra large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) {
+  .main-page__level,
+  .main-page__health,
+  .main-page__distance { font-size: 18px; }
+  .main-page__button { font-size: 16px; padding: 18px 50px; min-width: 220px; }
+  .main-page__buttons { gap: 40px; }
+  .main-page__loading { font-size: 24px; }
+  .main-page__error { font-size: 20px; }
+}
+
+/* Landscape orientation adjustments */
+@media (max-height: 500px) and (orientation: landscape) {
+  .main-page__header { padding: 8px 12px; }
+  .main-page__buttons { gap: 12px; }
+  .main-page__distance { padding: 8px; }
+}
