@@ -9,7 +9,7 @@ function MainPage({ userId, onInventoryClick, onMapClick }) {
     const loadUser = async () => {
       try {
         const response = await fetch(
-          `https://questwalk-fastapi.vercel.app/api/users/${userId}`
+          `https://fastapi-python-boilerplate-git-addcors-kanshandirs-projects.vercel.app/api/users/${userId}`
         );
 
         if (!response.ok) throw new Error("User not found");

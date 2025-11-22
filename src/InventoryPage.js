@@ -9,7 +9,7 @@ function InventoryPage({ userId, onBack }) {
     const loadInventory = async () => {
       try {
         const response = await fetch(
-          `https://questwalk-fastapi.vercel.app/api/users/${userId}/`
+          `https://fastapi-python-boilerplate-git-addcors-kanshandirs-projects.vercel.app/api/users/${userId}/`
         );
         if (!response.ok) throw new Error("Failed to load inventory");
 
