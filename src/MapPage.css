@@ -3,7 +3,7 @@
   height: 100vh;
   margin: 0;
   padding: 0;
-  font-family: 'Press Start 2P';
+  font-family: 'Press Start 2P', cursive;;
   background-color: #000000;
   display: flex;
   flex-direction: column;
@@ -82,7 +82,7 @@
 }
 
 .map-page__back-button {
-  font-family: 'Press Start 2P';
+  font-family: 'Press Start 2P', cursive;;
   background-color: transparent;
   color: #FFFFFF;
   border: clamp(2px, 0.4vw, 4px) solid #FFD700;
