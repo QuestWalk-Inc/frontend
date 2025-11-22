@@ -10,7 +10,7 @@ function InventoryPage({ userId, onBack }) {
     const loadInventory = async () => {
       try {
         const response = await fetch(
-          `${API_BASE_URL}/users/${userId}/`
+          `${API_BASE_URL}/users/${userId}`
         );
         if (!response.ok) throw new Error("Failed to load inventory");
 

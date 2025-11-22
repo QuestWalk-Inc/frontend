@@ -10,7 +10,7 @@ function MainPage({ userId, onInventoryClick, onMapClick }) {
     const loadUser = async () => {
       try {
         const response = await fetch(
-          `${API_BASE_URL}/users/${userId}/`
+          `${API_BASE_URL}/users/${userId}`
         );
 
         if (!response.ok) throw new Error("User not found");
