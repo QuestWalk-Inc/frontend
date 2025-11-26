@@ -2,7 +2,7 @@ import "./MapPage.css";
 import { MAP_IMAGE_URL } from "./constants";
 import { useRef, useEffect } from "react";
 
-function MapPage({ onBack }) {
+function MapPage({ onBack, onOpenTavern }) {
   const containerRef = useRef(null);
   const imgRef = useRef(null);
 
@@ -120,6 +120,18 @@ function MapPage({ onBack }) {
           alt="Quest Map"
           className="map-page__image"
         />
+
+        <button
+          className="map-page__poi-button"
+          type="button"
+          onClick={onOpenTavern}
+        >
+          <img
+            src="https://dsrljeikegnnkujbjitp.supabase.co/storage/v1/object/sign/map%20stuff/tavern_map.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV81MTQ4YTcwMS0xN2YzLTQ1ZTEtYjA2ZC00M2Q0OGU3ZDYyMDgiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJtYXAgc3R1ZmYvdGF2ZXJuX21hcC5wbmciLCJpYXQiOjE3NjQwODcxOTcsImV4cCI6MjM5OTY5NjcxOTd9.Pm2sdWIjc7ExTzoUV_kgajvqC0kDoyakHbHhr9MKf1w"
+            alt="Tavern"
+            className="map-page__poi-image"
+          />
+        </button>
       </div>
 
       <div className="map-page__buttons">

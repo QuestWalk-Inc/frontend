@@ -3,11 +3,12 @@ import StartPage from "./StartPage";
 import MainPage from "./MainPage";
 import InventoryPage from "./InventoryPage";
 import MapPage from "./MapPage";
+import TavernPage from "./TavernPage";
 
 function App() {
   const [started, setStarted] = useState(false);
   const [userId, setUserId] = useState(null);
-  const [currentPage, setCurrentPage] = useState("main"); // "main", "inventory", or "map"
+  const [currentPage, setCurrentPage] = useState("main"); // "main", "inventory", "map", or "tavern"
 
   useEffect(() => {
     const tg = window.Telegram?.WebApp;
@@ -36,7 +37,16 @@ function App() {
   }
 
   if (currentPage === "map") {
-    return <MapPage onBack={() => setCurrentPage("main")} />;
+    return (
+      <MapPage
+        onBack={() => setCurrentPage("main")}
+        onOpenTavern={() => setCurrentPage("tavern")}
+      />
+    );
+  }
+
+  if (currentPage === "tavern") {
+    return <TavernPage onBack={() => setCurrentPage("map")} />;
   }
 
   return (
