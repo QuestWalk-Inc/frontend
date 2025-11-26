@@ -1,0 +1,9 @@
+@import "./MapPage.css";
+
+/* Tavern-specific overrides can go here */
+
+.tavern-page__content {
+  /* Example: slightly different padding or background if you need it later */
+}
+
+

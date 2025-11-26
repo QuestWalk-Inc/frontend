@@ -10,6 +10,8 @@ function MapPage({ onBack, onOpenTavern }) {
     const container = containerRef.current;
     const img = imgRef.current;
 
+    if (!container || !img) return;
+
     let scale = 1.6;     // стартовое увеличение, чтобы карта была крупнее
     let lastScale = 1;
     let posX = 0;
@@ -46,7 +48,7 @@ function MapPage({ onBack, onOpenTavern }) {
       img.style.transform = `translate(${posX}px, ${posY}px) scale(${scale})`;
     }
 
-    container.addEventListener("touchstart", e => {
+    const handleTouchStart = e => {
       if (e.touches.length === 1) {
         isDragging = true;
         lastX = e.touches[0].clientX - posX;
@@ -56,51 +58,72 @@ function MapPage({ onBack, onOpenTavern }) {
         initialDistance = distance(e.touches);
         lastScale = scale;
       }
-    });
+    };
 
-    container.addEventListener(
-      "touchmove",
-      e => {
-        e.preventDefault();
-        if (e.touches.length === 1 && isDragging) {
-          posX = e.touches[0].clientX - lastX;
-          posY = e.touches[0].clientY - lastY;
-        }
-        if (e.touches.length === 2) {
-          const newDist = distance(e.touches);
-          scale = Math.min(4, Math.max(1, (newDist / initialDistance) * lastScale));
-        }
-        updateTransform();
-      },
-      { passive: false }
-    );
+    const handleTouchMove = e => {
+      e.preventDefault();
+      if (e.touches.length === 1 && isDragging) {
+        posX = e.touches[0].clientX - lastX;
+        posY = e.touches[0].clientY - lastY;
+      }
+      if (e.touches.length === 2) {
+        const newDist = distance(e.touches);
+        scale = Math.min(4, Math.max(1, (newDist / initialDistance) * lastScale));
+      }
+      updateTransform();
+    };
 
-    container.addEventListener("touchend", () => {
+    const handleTouchEnd = () => {
       isDragging = false;
-    });
+    };
 
-    container.addEventListener("mousedown", e => {
+    const handleMouseDown = e => {
       isDragging = true;
       lastX = e.clientX - posX;
       lastY = e.clientY - posY;
-    });
+    };
 
-    window.addEventListener("mousemove", e => {
+    const handleMouseMove = e => {
       if (!isDragging) return;
       posX = e.clientX - lastX;
       posY = e.clientY - lastY;
       updateTransform();
-    });
+    };
 
-    window.addEventListener("mouseup", () => {
+    const handleMouseUp = () => {
       isDragging = false;
-    });
+    };
 
-    container.addEventListener("wheel", e => {
+    const handleWheel = e => {
       const delta = -e.deltaY * 0.001;
       scale = Math.max(1, Math.min(4, scale + delta));
       updateTransform();
-    });
+    };
+
+    container.addEventListener("touchstart", handleTouchStart);
+    container.addEventListener("touchmove", handleTouchMove, { passive: false });
+    container.addEventListener("touchend", handleTouchEnd);
+
+    container.addEventListener("mousedown", handleMouseDown);
+    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mouseup", handleMouseUp);
+
+    container.addEventListener("wheel", handleWheel);
+
+    // начальное применение трансформации
+    updateTransform();
+
+    return () => {
+      container.removeEventListener("touchstart", handleTouchStart);
+      container.removeEventListener("touchmove", handleTouchMove);
+      container.removeEventListener("touchend", handleTouchEnd);
+
+      container.removeEventListener("mousedown", handleMouseDown);
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mouseup", handleMouseUp);
+
+      container.removeEventListener("wheel", handleWheel);
+    };
   }, []);
 
   return (

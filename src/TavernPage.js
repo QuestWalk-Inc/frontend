@@ -1,4 +1,4 @@
-import "./MapPage.css";
+import "./TavernPage.css";
 
 function TavernPage({ onBack }) {
   return (
