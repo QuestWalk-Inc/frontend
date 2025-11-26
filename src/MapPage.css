@@ -54,11 +54,14 @@
 /* ✔ КНОПКА ТАВЕРНЫ ВСЕГДА СВЕРХУ */
 .map-page__poi-button {
   position: absolute;
-  top: 1400px; /* координаты внутри большой карты */
-  left: 900px;
+  top: 67%;
+  left: 46%;
+  transform: translate(-50%, -50%);
   background: none;
   border: none;
-  z-index: 9999;
+  padding: 0;
+  cursor: pointer;
+  z-index: 9999; /* 🔥 главный параметр */
 }
 
 .map-page__poi-image {
