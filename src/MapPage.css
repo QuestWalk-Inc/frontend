@@ -41,10 +41,10 @@
 .map-page__map-wrapper {
   position: absolute;
   inset: 0; /* заменяет top:0;left:0;right:0;bottom:0 */
+  transform-origin: top left;
 }
 
 .map-page__image {
-  transform-origin: top left;
   image-rendering: pixelated;
   display: block;
   user-select: none;
@@ -54,6 +54,8 @@
 /* ✔ КНОПКА ТАВЕРНЫ ВСЕГДА СВЕРХУ */
 .map-page__poi-button {
   position: absolute;
+  /* Координаты в процентах относительно карты.
+     Подберите значения под вашу конкретную картинку. */
   top: 67%;
   left: 46%;
   transform: translate(-50%, -50%);

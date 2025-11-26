@@ -5,12 +5,14 @@ import { useRef, useEffect } from "react";
 function MapPage({ onBack, onOpenTavern }) {
   const containerRef = useRef(null);
   const imgRef = useRef(null);
+  const mapWrapperRef = useRef(null);
 
   useEffect(() => {
     const container = containerRef.current;
     const img = imgRef.current;
+    const mapWrapper = mapWrapperRef.current;
 
-    if (!container || !img) return;
+    if (!container || !img || !mapWrapper) return;
 
     let scale = 1.6;
     let lastScale = 1;
@@ -43,7 +45,9 @@ function MapPage({ onBack, onOpenTavern }) {
       const minY = containerRect.height - imgHeight;
       posY = clamp(posY, minY > 0 ? 0 : minY, maxY);
 
-      img.style.transform = `translate(${posX}px, ${posY}px) scale(${scale})`;
+      // Применяем трансформацию ко всему контейнеру карты,
+      // чтобы и кнопка POI двигалась и зумировалась вместе с картой.
+      mapWrapper.style.transform = `translate(${posX}px, ${posY}px) scale(${scale})`;
     }
 
     const handleTouchStart = e => {
@@ -132,27 +136,27 @@ function MapPage({ onBack, onOpenTavern }) {
       <div className="map-page__content" ref={containerRef}>
         
         {/* КАРТА */}
-        <div className="map-page__map-wrapper">
+        <div className="map-page__map-wrapper" ref={mapWrapperRef}>
           <img
             ref={imgRef}
             src={MAP_IMAGE_URL}
             alt="Quest Map"
             className="map-page__image"
           />
+          
+          {/* КНОПКА ТАВЕРНЫ — ДВИЖЕТСЯ ВМЕСТЕ С КАРТОЙ */}
+          <button
+            className="map-page__poi-button"
+            type="button"
+            onClick={onOpenTavern}
+          >
+            <img
+              src="https://dsrljeikegnnkujbjitp.supabase.co/storage/v1/object/sign/map%20stuff/tavern_map.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV81MTQ4YTcwMS0xN2YzLTQ1ZTEtYjA2ZC00M2Q0OGU3ZDYyMDgiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJtYXAgc3R1ZmYvdGF2ZXJuX21hcC5wbmciLCJpYXQiOjE3NjQxNzk4NTksImV4cCI6MjAxNzgwMDcwNTl9.pk9wyrqDPrxGgP1RttZhH1bgq_B2R1RtdDAthPp57YM"
+              alt="Tavern"
+              className="map-page__poi-image"
+            />
+          </button>
         </div>
-
-        {/* КНОПКА ТАВЕРНЫ — ВСЕГДА СВЕРХУ */}
-        <button
-          className="map-page__poi-button"
-          type="button"
-          onClick={onOpenTavern}
-        >
-          <img
-            src="https://dsrljeikegnnkujbjitp.supabase.co/storage/v1/object/sign/map%20stuff/tavern_map.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV81MTQ4YTcwMS0xN2YzLTQ1ZTEtYjA2ZC00M2Q0OGU3ZDYyMDgiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJtYXAgc3R1ZmYvdGF2ZXJuX21hcC5wbmciLCJpYXQiOjE3NjQxNzk4NTksImV4cCI6MjAxNzgwMDcwNTl9.pk9wyrqDPrxGgP1RttZhH1bgq_B2R1RtdDAthPp57YM"
-            alt="Tavern"
-            className="map-page__poi-image"
-          />
-        </button>
       </div>
 
       <div className="map-page__buttons">
