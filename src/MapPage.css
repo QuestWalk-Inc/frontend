@@ -56,8 +56,8 @@
   position: absolute;
   /* Координаты в процентах относительно карты.
      Подберите значения под вашу конкретную картинку. */
-  top: 99%;
-  left: 155%;
+  top: 98%;
+  left: 154%;
   transform: translate(-50%, -50%);
   background: none;
   border: none;
