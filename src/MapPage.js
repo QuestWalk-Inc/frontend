@@ -10,7 +10,7 @@ function MapPage({ onBack, onOpenTavern }) {
     const container = containerRef.current;
     const img = imgRef.current;
 
-    let scale = 1;
+    let scale = 1.6;     // стартовое увеличение, чтобы карта была крупнее
     let lastScale = 1;
     let posX = 0;
     let posY = 0;
@@ -29,17 +29,16 @@ function MapPage({ onBack, onOpenTavern }) {
     }
 
     function updateTransform() {
-      // Получаем размеры контейнера и картинки
       const containerRect = container.getBoundingClientRect();
       const imgWidth = img.naturalWidth * scale;
       const imgHeight = img.naturalHeight * scale;
 
-      // Ограничиваем смещение по X (чтобы нельзя было уходить в стороны)
+      // Ограничение по X
       const maxX = 0;
       const minX = containerRect.width - imgWidth;
       posX = clamp(posX, minX > 0 ? 0 : minX, maxX);
 
-      // Ограничиваем смещение по Y (карта не уходит вверх)
+      // Ограничение по Y — НЕ даём уходить вверх или вниз
       const maxY = 0;
       const minY = containerRect.height - imgHeight;
       posY = clamp(posY, minY > 0 ? 0 : minY, maxY);
@@ -47,7 +46,6 @@ function MapPage({ onBack, onOpenTavern }) {
       img.style.transform = `translate(${posX}px, ${posY}px) scale(${scale})`;
     }
 
-    // ===== TOUCH =====
     container.addEventListener("touchstart", e => {
       if (e.touches.length === 1) {
         isDragging = true;
@@ -70,7 +68,7 @@ function MapPage({ onBack, onOpenTavern }) {
         }
         if (e.touches.length === 2) {
           const newDist = distance(e.touches);
-          scale = Math.min(4, Math.max(0.8, (newDist / initialDistance) * lastScale));
+          scale = Math.min(4, Math.max(1, (newDist / initialDistance) * lastScale));
         }
         updateTransform();
       },
@@ -81,7 +79,6 @@ function MapPage({ onBack, onOpenTavern }) {
       isDragging = false;
     });
 
-    // ===== MOUSE =====
     container.addEventListener("mousedown", e => {
       isDragging = true;
       lastX = e.clientX - posX;
@@ -99,10 +96,9 @@ function MapPage({ onBack, onOpenTavern }) {
       isDragging = false;
     });
 
-    // ===== WHEEL ZOOM =====
     container.addEventListener("wheel", e => {
       const delta = -e.deltaY * 0.001;
-      scale = Math.max(0.8, Math.min(4, scale + delta));
+      scale = Math.max(1, Math.min(4, scale + delta));
       updateTransform();
     });
   }, []);
@@ -115,6 +111,8 @@ function MapPage({ onBack, onOpenTavern }) {
 
       <div className="map-page__content" ref={containerRef}>
         <div className="map-page__map-wrapper">
+
+          {/* сама карта */}
           <img
             ref={imgRef}
             src={MAP_IMAGE_URL}
@@ -122,17 +120,19 @@ function MapPage({ onBack, onOpenTavern }) {
             className="map-page__image"
           />
 
+          {/* кнопка таверны */}
           <button
             className="map-page__poi-button"
             type="button"
             onClick={onOpenTavern}
           >
             <img
-              src="https://dsrljeikegnnkujbjitp.supabase.co/storage/v1/object/sign/map%20stuff/tavern_map.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV81MTQ4YTcwMS0xN2YzLTQ1ZTEtYjA2ZC00M2Q0OGU3ZDYyMDgiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJtYXAgc3R1ZmYvdGF2ZXJuX21hcC5wbmciLCJpYXQiOjE3NjQxNzkwNzYsImV4cCI6MTg1OTAyNTM3NDc2fQ.-j9yhqSWVkzFfwZvPD8T-V52lMAkL4z-AEIG_Kxx8qs"
+              src="https://dsrljeikegnnkujbjitp.supabase.co/storage/v1/object/public/map%20stuff/tavern_map.png"
               alt="Tavern"
               className="map-page__poi-image"
             />
           </button>
+
         </div>
       </div>
 
