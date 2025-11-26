@@ -16,7 +16,7 @@
   top: 0;
   left: 0;
   right: 0;
-  z-index: 10;
+  z-index: 50;
   display: flex;
   justify-content: center;
   align-items: flex-start;
@@ -33,45 +33,42 @@
 .map-page__content {
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
-  overflow: hidden;    /* ❗ запрещён весь скролл */
-  display: flex;
+  overflow: hidden;
   background: #000;
 }
 
+/* карта должна растягиваться на весь контейнер */
 .map-page__map-wrapper {
-  position: relative;
-}
-
-.map-page__info {
-  color: #fff;
-  padding: 80px 20px 100px;
-  font-size: 12px;
-  line-height: 1.6;
+  position: absolute;
+  inset: 0; /* заменяет top:0;left:0;right:0;bottom:0 */
 }
 
 .map-page__image {
   transform-origin: top left;
   image-rendering: pixelated;
   display: block;
+  user-select: none;
+  -webkit-user-drag: none;
 }
 
-/* Tavern button – позиция по твоей карте */
+/* ✔ КНОПКА ТАВЕРНЫ ВСЕГДА СВЕРХУ */
 .map-page__poi-button {
   position: absolute;
-  top: 67%; 
+  top: 67%;
   left: 46%;
   transform: translate(-50%, -50%);
   background: none;
   border: none;
   padding: 0;
   cursor: pointer;
-  z-index: 20;
+  z-index: 9999; /* 🔥 главный параметр */
 }
 
 .map-page__poi-image {
   width: 70px;
   height: 70px;
   image-rendering: pixelated;
+  pointer-events: none;
 }
 
 /* Bottom buttons */
@@ -80,6 +77,7 @@
   bottom: 0;
   left: 0;
   right: 0;
+  z-index: 50;
   background-color: rgba(0, 0, 0, 0.8);
   padding: 20px;
   display: flex;
