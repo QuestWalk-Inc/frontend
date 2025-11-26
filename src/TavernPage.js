@@ -5,6 +5,7 @@ import { API_BASE_URL } from "./constants";
 function TavernPage({ userId, onBack }) {
   const [missions, setMissions] = useState(null);
   const [error, setError] = useState(null);
+  const [validatableMissions, setValidatableMissions] = useState({});
 
   useEffect(() => {
     const loadMissions = async () => {
@@ -32,6 +33,43 @@ function TavernPage({ userId, onBack }) {
 
     loadMissions();
   }, [userId]);
+
+  // Check which missions are validatable via /missions/{id} endpoint
+  useEffect(() => {
+    if (!missions || missions.length === 0) return;
+
+    const checkValidatable = async () => {
+      try {
+        const results = await Promise.all(
+          missions.map(async (mission) => {
+            try {
+              const response = await fetch(
+                `${API_BASE_URL}/missions/${mission.id}`
+              );
+              if (!response.ok) {
+                return [mission.id, false];
+              }
+              const data = await response.json();
+              const isTrue =
+                data === true ||
+                data?.is_valid === true ||
+                data?.can_validate === true ||
+                data?.result === true;
+              return [mission.id, isTrue];
+            } catch {
+              return [mission.id, false];
+            }
+          })
+        );
+
+        setValidatableMissions(Object.fromEntries(results));
+      } catch {
+        // silently ignore for now
+      }
+    };
+
+    checkValidatable();
+  }, [missions]);
 
   if (error) {
     return (
@@ -101,6 +139,14 @@ function TavernPage({ userId, onBack }) {
                       mission.title ||
                       `Mission #${mission.id}`}
                   </button>
+                  {validatableMissions[mission.id] && (
+                    <button
+                      type="button"
+                      className="tavern-page__validate-button"
+                    >
+                      VALIDATE
+                    </button>
+                  )}
                   {mission.description && (
                     <div className="tavern-page__mission-description">
                       {mission.description}
