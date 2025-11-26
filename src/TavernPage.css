@@ -1,9 +1,44 @@
 @import "./MapPage.css";
 
-/* Tavern-specific overrides can go here */
+/* Tavern-specific styles */
 
-.tavern-page__content {
-  /* Example: slightly different padding or background if you need it later */
+.tavern-page__missions-title {
+  font-size: 14px;
+  margin-bottom: 16px;
+  color: #FFD700;
 }
 
+.tavern-page__no-missions {
+  font-size: 12px;
+  color: #fff;
+}
 
+.tavern-page__missions-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.tavern-page__mission-item {
+  border: 2px solid #FFD700;
+  padding: 10px;
+  margin-bottom: 12px;
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+.tavern-page__mission-title {
+  font-size: 12px;
+  color: #FFD700;
+  margin-bottom: 6px;
+}
+
+.tavern-page__mission-description {
+  font-size: 10px;
+  color: #fff;
+  margin-bottom: 4px;
+}
+
+.tavern-page__mission-reward {
+  font-size: 10px;
+  color: #00FF00;
+}

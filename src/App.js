@@ -46,7 +46,12 @@ function App() {
   }
 
   if (currentPage === "tavern") {
-    return <TavernPage onBack={() => setCurrentPage("map")} />;
+    return (
+      <TavernPage
+        userId={userId}
+        onBack={() => setCurrentPage("map")}
+      />
+    );
   }
 
   return (
