@@ -58,8 +58,6 @@
      Подберите значения под вашу конкретную картинку. */
   top: 99%;
   left: 153%;
-  width: 50px;
-  height: 50px;
   transform: translate(-50%, -50%);
   background: none;
   border: none;
@@ -69,8 +67,8 @@
 }
 
 .map-page__poi-image {
-  width: 70px;
-  height: 70px;
+  width: 50px;
+  height: 50px;
   image-rendering: pixelated;
   pointer-events: none;
 }
