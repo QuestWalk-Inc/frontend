@@ -68,7 +68,7 @@
 
 .map-page__poi-image {
   width: 50px;
-  height: 50px;
+  height: 70px;
   image-rendering: pixelated;
   pointer-events: none;
 }
