@@ -57,6 +57,10 @@
   display: none; /* Chrome, Safari, Opera */
 }
 
+.map-page__map-wrapper {
+  position: relative;
+}
+
 /* ===== карта не растягивается и скроллится ===== */
 .map-page__image {
   width: auto;
@@ -74,6 +78,23 @@
   image-rendering: crisp-edges;
 
   touch-action: auto; /* позволяет скроллить на мобильных */
+}
+
+.map-page__poi-button {
+  position: absolute;
+  top: 62%;
+  left: 37%;
+  transform: translate(-50%, -50%);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.map-page__poi-image {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
 }
 
 /* ===== buttons area ===== */

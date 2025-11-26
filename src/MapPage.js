@@ -114,26 +114,26 @@ function MapPage({ onBack, onOpenTavern }) {
       </div>
 
       <div className="map-page__content" ref={containerRef}>
-        <img
-          ref={imgRef}
-          src={MAP_IMAGE_URL}
-          alt="Quest Map"
-          className="map-page__image"
-        />
-      </div>
-
-      <div className="map-page__tavern-preview">
-        <button
-          className="map-page__poi-button"
-          type="button"
-          onClick={onOpenTavern}
-        >
+        <div className="map-page__map-wrapper">
           <img
-            src="https://dsrljeikegnnkujbjitp.supabase.co/storage/v1/object/sign/map%20stuff/tavern_map.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV81MTQ4YTcwMS0xN2YzLTQ1ZTEtYjA2ZC00M2Q0OGU3ZDYyMDgiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJtYXAgc3R1ZmYvdGF2ZXJuX21hcC5wbmciLCJpYXQiOjE3NjQwODcxOTcsImV4cCI6MjM5OTY5NjcxOTd9.Pm2sdWIjc7ExTzoUV_kgajvqC0kDoyakHbHhr9MKf1w"
-            alt="Tavern"
-            className="map-page__poi-image"
+            ref={imgRef}
+            src={MAP_IMAGE_URL}
+            alt="Quest Map"
+            className="map-page__image"
           />
-        </button>
+
+          <button
+            className="map-page__poi-button"
+            type="button"
+            onClick={onOpenTavern}
+          >
+            <img
+              src="https://dsrljeikegnnkujbjitp.supabase.co/storage/v1/object/sign/map%20stuff/tavern_map.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV81MTQ4YTcwMS0xN2YzLTQ1ZTEtYjA2ZC00M2Q0OGU3ZDYyMDgiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJtYXAgc3R1ZmYvdGF2ZXJuX21hcC5wbmciLCJpYXQiOjE3NjQxNzkwNzYsImV4cCI6MTg1OTAyNTM3NDc2fQ.-j9yhqSWVkzFfwZvPD8T-V52lMAkL4z-AEIG_Kxx8qs"
+              alt="Tavern"
+              className="map-page__poi-image"
+            />
+          </button>
+        </div>
       </div>
 
       <div className="map-page__buttons">
