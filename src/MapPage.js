@@ -127,7 +127,7 @@ function MapPage({ onBack, onOpenTavern }) {
             onClick={onOpenTavern}
           >
             <img
-              src="https://dsrljeikegnnkujbjitp.supabase.co/storage/v1/object/public/map%20stuff/tavern_map.png"
+              src="https://dsrljeikegnnkujbjitp.supabase.co/storage/v1/object/sign/map%20stuff/tavern_map.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV81MTQ4YTcwMS0xN2YzLTQ1ZTEtYjA2ZC00M2Q0OGU3ZDYyMDgiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJtYXAgc3R1ZmYvdGF2ZXJuX21hcC5wbmciLCJpYXQiOjE3NjQxNzk4NTksImV4cCI6MjAxNzgwMDcwNTl9.pk9wyrqDPrxGgP1RttZhH1bgq_B2R1RtdDAthPp57YM"
               alt="Tavern"
               className="map-page__poi-image"
             />
