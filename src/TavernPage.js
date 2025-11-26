@@ -71,6 +71,10 @@ function TavernPage({ userId, onBack }) {
     );
   }
 
+  const availableMissions = missions.filter(
+    (mission) => mission.is_passed === false
+  );
+
   return (
     <div className="map-page">
       <div className="map-page__header">
@@ -81,17 +85,22 @@ function TavernPage({ userId, onBack }) {
         <div className="map-page__info">
           <div className="tavern-page__missions-title">Available Missions</div>
 
-          {missions.length === 0 ? (
+          {availableMissions.length === 0 ? (
             <div className="tavern-page__no-missions">
               No missions available right now.
             </div>
           ) : (
             <ul className="tavern-page__missions-list">
-              {missions.map((mission) => (
+              {availableMissions.map((mission) => (
                 <li key={mission.id} className="tavern-page__mission-item">
-                  <div className="tavern-page__mission-title">
-                    {mission.title || `Mission #${mission.id}`}
-                  </div>
+                  <button
+                    type="button"
+                    className="tavern-page__mission-button"
+                  >
+                    {mission.mission_name ||
+                      mission.title ||
+                      `Mission #${mission.id}`}
+                  </button>
                   {mission.description && (
                     <div className="tavern-page__mission-description">
                       {mission.description}
