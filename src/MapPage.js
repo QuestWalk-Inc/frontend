@@ -113,6 +113,15 @@ function MapPage({ onBack, onOpenTavern }) {
         <div className="map-page__title">MAP</div>
       </div>
 
+      <div className="map-page__content" ref={containerRef}>
+        <img
+          ref={imgRef}
+          src={MAP_IMAGE_URL}
+          alt="Quest Map"
+          className="map-page__image"
+        />
+      </div>
+
       <div className="map-page__tavern-preview">
         <button
           className="map-page__poi-button"
@@ -125,15 +134,6 @@ function MapPage({ onBack, onOpenTavern }) {
             className="map-page__poi-image"
           />
         </button>
-      </div>
-
-      <div className="map-page__content" ref={containerRef}>
-        <img
-          ref={imgRef}
-          src={MAP_IMAGE_URL}
-          alt="Quest Map"
-          className="map-page__image"
-        />
       </div>
 
       <div className="map-page__buttons">
