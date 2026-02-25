@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import "./InventoryPage.css";
-import { API_BASE_URL } from "./constants";
+import { API_BASE_URL } from "../constants";
 
 function InventoryPage({ userId, onBack }) {
   const [inventoryData, setInventoryData] = useState(null);

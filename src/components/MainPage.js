@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import "./MainPage.css";
-import { API_BASE_URL } from "./constants";
+import { API_BASE_URL } from "../constants";
 
 function MainPage({ userId, onInventoryClick, onMapClick }) {
   const [userData, setUserData] = useState(null);

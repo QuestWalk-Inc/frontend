@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
-import StartPage from "./StartPage";
-import MainPage from "./MainPage";
-import InventoryPage from "./InventoryPage";
-import MapPage from "./MapPage";
-import TavernPage from "./TavernPage";
+import StartPage from "./components/StartPage";
+import MainPage from "./components/MainPage";
+import InventoryPage from "./components/InventoryPage";
+import MapPage from "./components/MapPage";
+import TavernPage from "./components/TavernPage";
 
 function App() {
   const [started, setStarted] = useState(false);

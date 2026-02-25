@@ -1,5 +1,5 @@
 import "./MapPage.css";
-import { MAP_IMAGE_URL } from "./constants";
+import { MAP_IMAGE_URL } from "../constants";
 import { useRef, useEffect } from "react";
 
 function MapPage({ onBack, onOpenTavern }) {
