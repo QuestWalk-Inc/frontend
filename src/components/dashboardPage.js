@@ -73,7 +73,7 @@ function DashboardPage({ onBack }) {
             className="inventory-page__calendar-today-button"
             onClick={handleGoToToday}
           >
-            TODAY
+            Go to Today
           </button>
         </div>
       )}
