@@ -29,6 +29,9 @@
   font-size: clamp(12px, 2vw, 18px);
   margin-bottom: clamp(6px, 1.5vw, 12px);
   color: #ffd700;
+  font-family: 'Press Start 2P', cursive;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
 }
 
 /* стрелка под датой */
