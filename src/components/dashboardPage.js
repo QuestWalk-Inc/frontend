@@ -39,6 +39,7 @@ function DashboardPage({ onBack }) {
     setSelectedDate(new Date());
   };
 
+  // Центрирование выбранного дня и стрелки
   useEffect(() => {
     if (calendarRef.current) {
       const activeButton = calendarRef.current.querySelector(
@@ -49,13 +50,16 @@ function DashboardPage({ onBack }) {
       );
 
       if (activeButton && arrow) {
-        const buttonLeft = activeButton.offsetLeft;
-        const buttonWidth = activeButton.offsetWidth;
-        arrow.style.left = `${buttonLeft + buttonWidth / 2}px`;
+        const buttonRect = activeButton.getBoundingClientRect();
+        const parentRect = calendarRef.current.getBoundingClientRect();
 
-        const parentWidth = calendarRef.current.offsetWidth;
+        // Центрируем стрелку по выбранному кружку
+        const offsetX = buttonRect.left + buttonRect.width / 2 - parentRect.left;
+        arrow.style.left = `${offsetX}px`;
+
+        // Центрируем выбранный день в полоске
         calendarRef.current.scrollLeft =
-          buttonLeft - parentWidth / 2 + buttonWidth / 2;
+          activeButton.offsetLeft - calendarRef.current.offsetWidth / 2 + activeButton.offsetWidth / 2;
       }
     }
   }, [selectedDate]);
@@ -66,7 +70,7 @@ function DashboardPage({ onBack }) {
         <div className="inventory-page__title">DASHBOARD</div>
       </div>
 
-      {/* TODAY button между DASHBOARD и датой */}
+      {/* TODAY button */}
       <div className="inventory-page__calendar-today-button-wrapper">
         <button
           type="button"
@@ -83,7 +87,7 @@ function DashboardPage({ onBack }) {
       {/* стрелка под датой */}
       <div className="inventory-page__calendar-selected-arrow">▼</div>
 
-      {/* календарная полоса с кружками */}
+      {/* календарная полоска */}
       <div className="inventory-page__calendar-strip" ref={calendarRef}>
         {days.map((day) => {
           const isSelected = isSameDay(day.date, selectedDate);
@@ -113,6 +117,7 @@ function DashboardPage({ onBack }) {
         {/* контент */}
       </div>
 
+      {/* BACK кнопка внизу */}
       <div className="inventory-page__buttons">
         <button className="inventory-page__back-button" onClick={onBack}>
           BACK
