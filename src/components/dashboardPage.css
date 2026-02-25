@@ -124,7 +124,7 @@ body::-webkit-scrollbar { display: none; }
 /* ===== selected arrow ===== */
 .inventory-page__calendar-selected-arrow {
   position: absolute;
-  top: -10%; /* между буквой дня и цифрой */
+  top: 1%; /* между буквой дня и цифрой */
   transform: translate(-50%, -50%);
   font-size: clamp(12px, 2vw, 18px);
   color: #ffd700;
