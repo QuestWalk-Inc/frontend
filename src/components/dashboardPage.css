@@ -62,6 +62,7 @@ body::-webkit-scrollbar { display: none; }
   gap: clamp(10px, 1.8vw, 16px);
   overflow-x: auto;
   padding-bottom: clamp(14px, 2vw, 20px);
+  position: relative;
   scroll-behavior: smooth;
 }
 
@@ -85,13 +86,6 @@ body::-webkit-scrollbar { display: none; }
 }
 
 .inventory-page__calendar-day-label { color: #8a8a8a; letter-spacing: 0.08em; }
-
-.inventory-page__calendar-arrow {
-  font-size: clamp(10px, 1.8vw, 14px);
-  color: #ffd700;
-  line-height: 1;
-  margin: -2px 0;
-}
 
 .inventory-page__calendar-day-circle {
   width: clamp(32px, 6vw, 44px);
@@ -125,6 +119,18 @@ body::-webkit-scrollbar { display: none; }
 .inventory-page__calendar-day--future .inventory-page__calendar-day-circle {
   border-color: rgba(255,255,255,0.18);
   background-color: rgba(255,255,255,0.06);
+}
+
+/* ===== selected arrow ===== */
+.inventory-page__calendar-selected-arrow {
+  position: absolute;
+  top: 50%; /* между буквой дня и цифрой */
+  transform: translate(-50%, -50%);
+  font-size: clamp(12px, 2vw, 18px);
+  color: #ffd700;
+  pointer-events: none;
+  transition: left 0.2s ease;
+  z-index: 5;
 }
 
 /* ===== title ===== */
@@ -178,15 +184,3 @@ body::-webkit-scrollbar { display: none; }
 }
 .inventory-page__back-button:hover { background-color: rgba(255,215,0,0.08); }
 .inventory-page__back-button:active { transform: translateY(1px) scale(0.995); }
-
-/* ===== loading / error ===== */
-.inventory-page__loading, .inventory-page__error {
-  display: flex;
-  justify-content:center;
-  align-items:center;
-  flex:1;
-}
-.inventory-page__loading { color:#ffd700; animation: inventory-page-loading-pulse 1.5s ease-in-out infinite; }
-.inventory-page__error { color:#ff0000; }
-
-@keyframes inventory-page-loading-pulse { 0%,100%{opacity:1}50%{opacity:0.5} }

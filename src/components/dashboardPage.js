@@ -40,16 +40,22 @@ function DashboardPage({ onBack }) {
   };
 
   useEffect(() => {
-    // Скролл к выбранному дню по центру
     if (calendarRef.current) {
       const activeButton = calendarRef.current.querySelector(
         ".inventory-page__calendar-day--active"
       );
-      if (activeButton) {
-        const parentWidth = calendarRef.current.offsetWidth;
+      const arrow = calendarRef.current.querySelector(
+        ".inventory-page__calendar-selected-arrow"
+      );
+
+      if (activeButton && arrow) {
         const buttonLeft = activeButton.offsetLeft;
         const buttonWidth = activeButton.offsetWidth;
-        calendarRef.current.scrollLeft = buttonLeft - parentWidth / 2 + buttonWidth / 2;
+        arrow.style.left = `${buttonLeft + buttonWidth / 2}px`;
+
+        const parentWidth = calendarRef.current.offsetWidth;
+        calendarRef.current.scrollLeft =
+          buttonLeft - parentWidth / 2 + buttonWidth / 2;
       }
     }
   }, [selectedDate]);
@@ -94,20 +100,20 @@ function DashboardPage({ onBack }) {
                 <span className="inventory-page__calendar-day-label">
                   {day.label}
                 </span>
-
-                <span className="inventory-page__calendar-arrow">▼</span>
-
                 <span className="inventory-page__calendar-day-circle">
                   {day.dateNumber}
                 </span>
               </button>
             );
           })}
+
+          {/* стрелка для выбранного дня */}
+          <div className="inventory-page__calendar-selected-arrow">▼</div>
         </div>
       </div>
 
       <div className="inventory-page__content">
-        {/* Тут можно вставлять контент страницы */}
+        {/* сюда можно вставлять контент */}
       </div>
 
       <div className="inventory-page__buttons">
