@@ -35,7 +35,7 @@ body::-webkit-scrollbar {
 /* ===== header ===== */
 .inventory-page__header {
   display: flex;
-  justify-content: flex-start;
+  justify-content: center;
   align-items: center;
   width: 100%;
   padding: clamp(10px, 2vw, 20px);
@@ -95,7 +95,7 @@ body::-webkit-scrollbar {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: transparent;
+  color: #ffffff;
   font-size: clamp(11px, 1.8vw, 14px);
   position: relative;
   background-color: transparent;
@@ -109,6 +109,11 @@ body::-webkit-scrollbar {
 .inventory-page__calendar-day--active .inventory-page__calendar-day-circle {
   background-color: #ffd700;
   color: #000000;
+  border-color: #ffd700;
+}
+
+.inventory-page__calendar-day--today .inventory-page__calendar-day-circle {
+  background-color: rgba(255, 215, 0, 0.6);
   border-color: #ffd700;
 }
 

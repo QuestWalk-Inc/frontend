@@ -3,7 +3,7 @@ import "./StartPage.css";
 function StartPage({ onStart }) {
   return (
     <div className="start-page">
-      <h1 className="start-page__title">QuestWalk</h1>
+      <h1 className="start-page__title">GymHero</h1>
       <button className="start-page__button" onClick={onStart}>
         Start Journey
       </button>

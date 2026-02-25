@@ -1,65 +1,88 @@
+import { useState } from "react";
 import "./dashboardPage.css";
 
 function DashboardPage({ onBack }) {
   const today = new Date();
 
-  const formattedDate = today.toLocaleDateString("en-GB", {
+  const weekdayLabels = ["S", "M", "T", "W", "T", "F", "S"];
+
+  const [selectedDate, setSelectedDate] = useState(today);
+
+  const formattedSelectedDate = selectedDate.toLocaleDateString("en-GB", {
     day: "numeric",
     month: "long"
   });
 
-  const weekdayIndex = today.getDay(); // 0 (Sun) - 6 (Sat)
-  const weekdayLabels = ["S", "M", "T", "W", "T", "F", "S"];
+  const startOffset = -180; // days before today
+  const endOffset = 365; // days after today
 
-  const weekDays = Array.from({ length: 7 }, (_, index) => {
+  const days = [];
+
+  for (let offset = startOffset; offset <= endOffset; offset += 1) {
     const date = new Date(today);
-    const diff = index - weekdayIndex;
-    date.setDate(today.getDate() + diff);
+    date.setDate(today.getDate() + offset);
 
-    return {
-      key: index,
-      label: weekdayLabels[index],
+    days.push({
+      key: date.toISOString().slice(0, 10),
+      label: weekdayLabels[date.getDay()],
       dateNumber: date.getDate(),
-      isToday: index === weekdayIndex,
-      isPast: index < weekdayIndex
-    };
-  });
+      isToday: offset === 0,
+      isPast: offset < 0,
+      date
+    });
+  }
+
+  const isSameDay = (a, b) =>
+    a.getFullYear() === b.getFullYear() &&
+    a.getMonth() === b.getMonth() &&
+    a.getDate() === b.getDate();
 
   return (
     <div className="inventory-page">
       <div className="inventory-page__header">
-        <button className="inventory-page__back-button" onClick={onBack}>
-          BACK
-        </button>
         <div className="inventory-page__title">DASHBOARD</div>
       </div>
 
       <div className="inventory-page__calendar">
         <div className="inventory-page__calendar-today">
-          Today, {formattedDate}
+          {formattedSelectedDate}
         </div>
 
         <div className="inventory-page__calendar-strip">
-          {weekDays.map((day) => (
-            <div
-              key={day.key}
-              className={`inventory-page__calendar-day ${
-                day.isToday
-                  ? "inventory-page__calendar-day--active"
-                  : day.isPast
-                  ? "inventory-page__calendar-day--past"
-                  : "inventory-page__calendar-day--future"
-              }`}
-            >
-              <span className="inventory-page__calendar-day-label">
-                {day.label}
-              </span>
-              <span className="inventory-page__calendar-day-circle">
-                &nbsp;
-              </span>
-            </div>
-          ))}
+          {days.map((day) => {
+            const isSelected = isSameDay(day.date, selectedDate);
+
+            return (
+              <button
+                type="button"
+                key={day.key}
+                className={`inventory-page__calendar-day ${
+                  isSelected
+                    ? "inventory-page__calendar-day--active"
+                    : day.isToday
+                    ? "inventory-page__calendar-day--today"
+                    : day.isPast
+                    ? "inventory-page__calendar-day--past"
+                    : "inventory-page__calendar-day--future"
+                }`}
+                onClick={() => setSelectedDate(day.date)}
+              >
+                <span className="inventory-page__calendar-day-label">
+                  {day.label}
+                </span>
+                <span className="inventory-page__calendar-day-circle">
+                  {day.dateNumber}
+                </span>
+              </button>
+            );
+          })}
         </div>
+      </div>
+
+      <div className="inventory-page__buttons">
+        <button className="inventory-page__back-button" onClick={onBack}>
+          BACK
+        </button>
       </div>
     </div>
   );
