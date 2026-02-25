@@ -53,7 +53,6 @@ function MainPage({ userId, onInventoryClick, onMapClick }) {
       <div className="main-page__buttons">
         <button className="main-page__button" onClick={onInventoryClick}>DASHBOARD</button>
       </div>
-    </div>
   );
 }
 
