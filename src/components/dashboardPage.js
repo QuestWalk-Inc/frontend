@@ -1,79 +1,65 @@
-import { useState, useEffect } from "react";
 import "./dashboardPage.css";
-import { API_BASE_URL } from "../constants";
 
-function InventoryPage({ userId, onBack }) {
-  const [inventoryData, setInventoryData] = useState(null);
-  const [error, setError] = useState(null);
+function DashboardPage({ onBack }) {
+  const today = new Date();
 
-  useEffect(() => {
-    const loadInventory = async () => {
-      try {
-        const response = await fetch(
-          `${API_BASE_URL}/users/${userId}`
-        );
-        if (!response.ok) throw new Error("Failed to load inventory");
+  const formattedDate = today.toLocaleDateString("en-GB", {
+    day: "numeric",
+    month: "long"
+  });
 
-        const userData = await response.json();
+  const weekdayIndex = today.getDay(); // 0 (Sun) - 6 (Sat)
+  const weekdayLabels = ["S", "M", "T", "W", "T", "F", "S"];
 
-        // Extract JSON column "inventory"
-        const inventory = userData.inventory || {};
+  const weekDays = Array.from({ length: 7 }, (_, index) => {
+    const date = new Date(today);
+    const diff = index - weekdayIndex;
+    date.setDate(today.getDate() + diff);
 
-        setInventoryData({
-          weapon: inventory.weapon || 0,
-          armour: inventory.armour || 0
-        });
-      } catch (err) {
-        setError(err.message);
-      }
+    return {
+      key: index,
+      label: weekdayLabels[index],
+      dateNumber: date.getDate(),
+      isToday: index === weekdayIndex,
+      isPast: index < weekdayIndex
     };
-
-    if (userId) loadInventory();
-  }, [userId]);
-
-  if (error)
-    return (
-      <div className="inventory-page">
-        <div className="inventory-page__error">Error: {error}</div>
-        <button className="inventory-page__back-button" onClick={onBack}>
-          BACK
-        </button>
-      </div>
-    );
-
-  if (!inventoryData)
-    return (
-      <div className="inventory-page">
-        <div className="inventory-page__loading">Loading...</div>
-      </div>
-    );
+  });
 
   return (
     <div className="inventory-page">
       <div className="inventory-page__header">
-        <div className="inventory-page__title">DASHBOARD</div>
-      </div>
-
-      <div className="inventory-page__content">
-        <div className="inventory-page__item">
-          <div className="inventory-page__item-label">WEAPON</div>
-          <div className="inventory-page__item-value">
-            +{inventoryData.weapon}
-          </div>
-        </div>
-
-        <div className="inventory-page__item">
-          <div className="inventory-page__item-label">ARMOUR</div>
-          <div className="inventory-page__item-value">
-            {inventoryData.armour}
-          </div>
-        </div>
-      </div>
-
-      <div className="inventory-page__buttons">
         <button className="inventory-page__back-button" onClick={onBack}>
           BACK
         </button>
+        <div className="inventory-page__title">DASHBOARD</div>
+      </div>
+
+      <div className="inventory-page__calendar">
+        <div className="inventory-page__calendar-today">
+          Today, {formattedDate}
+        </div>
+
+        <div className="inventory-page__calendar-strip">
+          {weekDays.map((day) => (
+            <div
+              key={day.key}
+              className={`inventory-page__calendar-day ${
+                day.isToday
+                  ? "inventory-page__calendar-day--active"
+                  : day.isPast
+                  ? "inventory-page__calendar-day--past"
+                  : "inventory-page__calendar-day--future"
+              }`}
+            >
+              <span className="inventory-page__calendar-day-label">
+                {day.label}
+              </span>
+              <span className="inventory-page__calendar-day-circle">
+                &nbsp;
+              </span>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
