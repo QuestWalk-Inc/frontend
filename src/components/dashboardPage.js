@@ -66,54 +66,51 @@ function DashboardPage({ onBack }) {
         <div className="inventory-page__title">DASHBOARD</div>
       </div>
 
-      <div className="inventory-page__calendar">
-        <div className="inventory-page__calendar-today">{formattedSelectedDate}</div>
+      {/* TODAY button между DASHBOARD и датой */}
+      <div className="inventory-page__calendar-today-button-wrapper">
+        <button
+          type="button"
+          className="inventory-page__calendar-today-button"
+          onClick={handleGoToToday}
+        >
+          TODAY
+        </button>
+      </div>
 
-        {/* TODAY button centered above arrow */}
-        <div className="inventory-page__calendar-today-button-wrapper">
-          <button
-            type="button"
-            className="inventory-page__calendar-today-button"
-            onClick={handleGoToToday}
-          >
-            TODAY
-          </button>
-        </div>
+      {/* выбранная дата */}
+      <div className="inventory-page__calendar-today">{formattedSelectedDate}</div>
 
-        <div className="inventory-page__calendar-strip" ref={calendarRef}>
-          {days.map((day) => {
-            const isSelected = isSameDay(day.date, selectedDate);
-            return (
-              <button
-                type="button"
-                key={day.key}
-                className={`inventory-page__calendar-day ${
-                  isSelected
-                    ? "inventory-page__calendar-day--active"
-                    : day.isToday
-                    ? "inventory-page__calendar-day--today"
-                    : day.isPast
-                    ? "inventory-page__calendar-day--past"
-                    : "inventory-page__calendar-day--future"
-                }`}
-                onClick={() => setSelectedDate(day.date)}
-              >
-                <span className="inventory-page__calendar-day-label">
-                  {day.label}
-                </span>
-                <span className="inventory-page__calendar-day-circle">
-                  {day.dateNumber}
-                </span>
-              </button>
-            );
-          })}
+      {/* стрелка под датой */}
+      <div className="inventory-page__calendar-selected-arrow">▼</div>
 
-          <div className="inventory-page__calendar-selected-arrow">▼</div>
-        </div>
+      {/* календарная полоса с кружками */}
+      <div className="inventory-page__calendar-strip" ref={calendarRef}>
+        {days.map((day) => {
+          const isSelected = isSameDay(day.date, selectedDate);
+          return (
+            <button
+              type="button"
+              key={day.key}
+              className={`inventory-page__calendar-day ${
+                isSelected
+                  ? "inventory-page__calendar-day--active"
+                  : day.isToday
+                  ? "inventory-page__calendar-day--today"
+                  : day.isPast
+                  ? "inventory-page__calendar-day--past"
+                  : "inventory-page__calendar-day--future"
+              }`}
+              onClick={() => setSelectedDate(day.date)}
+            >
+              <span className="inventory-page__calendar-day-label">{day.label}</span>
+              <span className="inventory-page__calendar-day-circle">{day.dateNumber}</span>
+            </button>
+          );
+        })}
       </div>
 
       <div className="inventory-page__content">
-        {/* сюда можно вставлять контент */}
+        {/* контент */}
       </div>
 
       <div className="inventory-page__buttons">

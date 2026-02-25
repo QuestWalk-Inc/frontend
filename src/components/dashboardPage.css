@@ -1,61 +1,4 @@
-/* ======= Global fixes ======= */
-*,
-*::before,
-*::after { box-sizing: border-box; }
-
-html, body {
-  height: 100%;
-  margin: 0;
-  padding: 0;
-  overflow-x: hidden;
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-
-html::-webkit-scrollbar,
-body::-webkit-scrollbar { display: none; }
-
-/* ===== inventory page ===== */
-.inventory-page {
-  height: 100vh;
-  margin: 0;
-  padding: clamp(12px, 2.5vw, 20px);
-  font-family: 'Press Start 2P', cursive;
-  background-color: #000;
-  display: flex;
-  flex-direction: column;
-  position: relative;
-  overflow: hidden;
-}
-
-/* ===== header ===== */
-.inventory-page__header {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  padding: clamp(10px, 2vw, 20px);
-  gap: clamp(12px, 2vw, 20px);
-}
-
-/* ===== calendar ===== */
-.inventory-page__calendar {
-  width: 100%;
-  max-width: 900px;
-  margin: 0 auto;
-  padding-inline: clamp(8px, 4vw, 20px);
-  padding-top: clamp(8px, 3vw, 24px);
-  color: #fff;
-}
-
-.inventory-page__calendar-today {
-  text-align: center;
-  font-size: clamp(12px, 2vw, 18px);
-  margin-bottom: clamp(6px, 1.5vw, 12px);
-  color: #ffd700;
-}
-
-/* TODAY button wrapper */
+/* TODAY button между DASHBOARD и датой */
 .inventory-page__calendar-today-button-wrapper {
   display: flex;
   justify-content: center;
@@ -80,7 +23,24 @@ body::-webkit-scrollbar { display: none; }
   transform: translateY(1px) scale(0.995);
 }
 
-/* calendar strip */
+/* выбранная дата */
+.inventory-page__calendar-today {
+  text-align: center;
+  font-size: clamp(12px, 2vw, 18px);
+  margin-bottom: clamp(6px, 1.5vw, 12px);
+  color: #ffd700;
+}
+
+/* стрелка под датой */
+.inventory-page__calendar-selected-arrow {
+  text-align: center;
+  font-size: clamp(14px, 2.2vw, 20px);
+  color: #ffd700;
+  margin-bottom: clamp(8px, 1.8vw, 16px);
+  pointer-events: none;
+}
+
+/* календарная полоса */
 .inventory-page__calendar-strip {
   display: flex;
   align-items: center;
@@ -88,13 +48,10 @@ body::-webkit-scrollbar { display: none; }
   gap: clamp(10px, 1.8vw, 16px);
   overflow-x: auto;
   padding-bottom: clamp(14px, 2vw, 20px);
-  position: relative;
   scroll-behavior: smooth;
 }
 
-.inventory-page__calendar-strip::-webkit-scrollbar { display: none; }
-
-/* calendar day */
+/* календарные кружки, остальные стили как раньше */
 .inventory-page__calendar-day {
   min-width: clamp(40px, 7vw, 52px);
   display: flex;
@@ -146,36 +103,7 @@ body::-webkit-scrollbar { display: none; }
   background-color: rgba(255,255,255,0.06);
 }
 
-/* selected arrow under selected day */
-.inventory-page__calendar-selected-arrow {
-  position: absolute;
-  top: calc(100% + 4px); /* под кружком */
-  transform: translateX(-50%);
-  font-size: clamp(12px, 2vw, 18px);
-  color: #ffd700;
-  pointer-events: none;
-  transition: left 0.2s ease;
-  z-index: 5;
-}
-
-/* title */
-.inventory-page__title { color: #ffd700; font-size: clamp(14px,2.5vw,20px); text-align:center; }
-
-/* content */
-.inventory-page__content {
-  flex: 1 1 auto;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: clamp(30px,6vw,60px);
-  width: 100%;
-  max-width: 900px;
-  padding-inline: clamp(8px,4vw,20px);
-  box-sizing: border-box;
-}
-
-/* BACK button fixed bottom */
+/* BACK кнопка внизу, как раньше */
 .inventory-page__buttons {
   position: fixed;
   bottom: clamp(12px,2.5vw,20px);
@@ -192,6 +120,7 @@ body::-webkit-scrollbar { display: none; }
   box-sizing: border-box;
   z-index: 10;
 }
+
 .inventory-page__back-button {
   font-family: 'Press Start 2P', cursive;
   background-color: transparent;
