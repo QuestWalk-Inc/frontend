@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import "./InventoryPage.css";
+import "./dashboardPage.css";
 import { API_BASE_URL } from "../constants";
 
 function InventoryPage({ userId, onBack }) {
@@ -51,7 +51,7 @@ function InventoryPage({ userId, onBack }) {
   return (
     <div className="inventory-page">
       <div className="inventory-page__header">
-        <div className="inventory-page__title">INVENTORY</div>
+        <div className="inventory-page__title">DASHBOARD</div>
       </div>
 
       <div className="inventory-page__content">

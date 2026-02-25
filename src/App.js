@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import StartPage from "./components/StartPage";
 import MainPage from "./components/MainPage";
-import InventoryPage from "./components/InventoryPage";
+import DashboardPage from "./components/dashboardPage";
 import MapPage from "./components/MapPage";
 import TavernPage from "./components/TavernPage";
 
@@ -33,7 +33,7 @@ function App() {
   }
 
   if (currentPage === "inventory") {
-    return <InventoryPage userId={userId} onBack={() => setCurrentPage("main")} />;
+    return <DashboardPage userId={userId} onBack={() => setCurrentPage("main")} />;
   }
 
   if (currentPage === "map") {
