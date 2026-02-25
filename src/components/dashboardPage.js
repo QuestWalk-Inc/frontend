@@ -66,15 +66,17 @@ function DashboardPage({ onBack }) {
       </div>
 
       {/* TODAY button */}
-      <div className="inventory-page__calendar-today-button-wrapper">
-        <button
-          type="button"
-          className="inventory-page__calendar-today-button"
-          onClick={handleGoToToday}
-        >
-          TODAY
-        </button>
-      </div>
+      {!isSameDay(selectedDate, today) && (
+        <div className="inventory-page__calendar-today-button-wrapper">
+          <button
+            type="button"
+            className="inventory-page__calendar-today-button"
+            onClick={handleGoToToday}
+          >
+            TODAY
+          </button>
+        </div>
+      )}
 
       {/* выбранная дата */}
       <div className="inventory-page__calendar-today">{formattedSelectedDate}</div>
