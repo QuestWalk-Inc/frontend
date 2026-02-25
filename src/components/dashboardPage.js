@@ -10,11 +10,12 @@ function DashboardPage({ onBack }) {
 
   const formattedSelectedDate = selectedDate.toLocaleDateString("en-GB", {
     day: "numeric",
-    month: "long"
+    month: "long",
+    year: "numeric", // добавили год
   });
 
-  const startOffset = -180; // days before today
-  const endOffset = 365; // days after today
+  const startOffset = -180;
+  const endOffset = 365;
 
   const days = [];
 
@@ -28,7 +29,7 @@ function DashboardPage({ onBack }) {
       dateNumber: date.getDate(),
       isToday: offset === 0,
       isPast: offset < 0,
-      date
+      date,
     });
   }
 
@@ -36,6 +37,10 @@ function DashboardPage({ onBack }) {
     a.getFullYear() === b.getFullYear() &&
     a.getMonth() === b.getMonth() &&
     a.getDate() === b.getDate();
+
+  const handleGoToToday = () => {
+    setSelectedDate(new Date());
+  };
 
   return (
     <div className="inventory-page">
@@ -47,6 +52,14 @@ function DashboardPage({ onBack }) {
         <div className="inventory-page__calendar-today">
           {formattedSelectedDate}
         </div>
+
+        <button
+          type="button"
+          className="inventory-page__go-today-button"
+          onClick={handleGoToToday}
+        >
+          TODAY
+        </button>
 
         <div className="inventory-page__calendar-strip">
           {days.map((day) => {
