@@ -6,6 +6,7 @@ function DashboardPage({ onBack }) {
   const weekdayLabels = ["S", "M", "T", "W", "T", "F", "S"];
   const [selectedDate, setSelectedDate] = useState(today);
   const calendarRef = useRef(null);
+  const arrowRef = useRef(null);
 
   const formattedSelectedDate = selectedDate.toLocaleDateString("en-GB", {
     day: "numeric",
@@ -35,31 +36,25 @@ function DashboardPage({ onBack }) {
     a.getMonth() === b.getMonth() &&
     a.getDate() === b.getDate();
 
-  const handleGoToToday = () => {
-    setSelectedDate(new Date());
-  };
+  const handleGoToToday = () => setSelectedDate(new Date());
 
-  // Центрирование выбранного дня и стрелки
+  // Центрирование выбранного дня под стрелкой
   useEffect(() => {
-    if (calendarRef.current) {
+    if (calendarRef.current && arrowRef.current) {
       const activeButton = calendarRef.current.querySelector(
         ".inventory-page__calendar-day--active"
       );
-      const arrow = calendarRef.current.querySelector(
-        ".inventory-page__calendar-selected-arrow"
-      );
+      if (activeButton) {
+        // Центрирование полоски календаря
+        const scroll =
+          activeButton.offsetLeft -
+          calendarRef.current.offsetWidth / 2 +
+          activeButton.offsetWidth / 2;
+        calendarRef.current.scrollLeft = scroll;
 
-      if (activeButton && arrow) {
-        const buttonRect = activeButton.getBoundingClientRect();
-        const parentRect = calendarRef.current.getBoundingClientRect();
-
-        // Центрируем стрелку по выбранному кружку
-        const offsetX = buttonRect.left + buttonRect.width / 2 - parentRect.left;
-        arrow.style.left = `${offsetX}px`;
-
-        // Центрируем выбранный день в полоске
-        calendarRef.current.scrollLeft =
-          activeButton.offsetLeft - calendarRef.current.offsetWidth / 2 + activeButton.offsetWidth / 2;
+        // Стрелка по центру выбранного кружка
+        arrowRef.current.style.left =
+          activeButton.offsetLeft + activeButton.offsetWidth / 2 + "px";
       }
     }
   }, [selectedDate]);
@@ -85,7 +80,9 @@ function DashboardPage({ onBack }) {
       <div className="inventory-page__calendar-today">{formattedSelectedDate}</div>
 
       {/* стрелка под датой */}
-      <div className="inventory-page__calendar-selected-arrow">▼</div>
+      <div className="inventory-page__calendar-selected-arrow" ref={arrowRef}>
+        ▼
+      </div>
 
       {/* календарная полоска */}
       <div className="inventory-page__calendar-strip" ref={calendarRef}>
@@ -106,16 +103,18 @@ function DashboardPage({ onBack }) {
               }`}
               onClick={() => setSelectedDate(day.date)}
             >
-              <span className="inventory-page__calendar-day-label">{day.label}</span>
-              <span className="inventory-page__calendar-day-circle">{day.dateNumber}</span>
+              <span className="inventory-page__calendar-day-label">
+                {day.label}
+              </span>
+              <span className="inventory-page__calendar-day-circle">
+                {day.dateNumber}
+              </span>
             </button>
           );
         })}
       </div>
 
-      <div className="inventory-page__content">
-        {/* контент */}
-      </div>
+      <div className="inventory-page__content">{/* контент */}</div>
 
       {/* BACK кнопка внизу */}
       <div className="inventory-page__buttons">
