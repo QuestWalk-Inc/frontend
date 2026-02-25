@@ -1,13 +1,11 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import "./dashboardPage.css";
 
 function DashboardPage({ onBack }) {
-  const [today] = useState(() => new Date());
-  const [selectedDate, setSelectedDate] = useState(() => new Date());
-
-  const selectedRef = useRef(null);
-
+  const today = new Date();
   const weekdayLabels = ["S", "M", "T", "W", "T", "F", "S"];
+  const [selectedDate, setSelectedDate] = useState(today);
+  const calendarRef = useRef(null);
 
   const formattedSelectedDate = selectedDate.toLocaleDateString("en-GB", {
     day: "numeric",
@@ -17,17 +15,16 @@ function DashboardPage({ onBack }) {
 
   const startOffset = -180;
   const endOffset = 365;
-
   const days = [];
 
   for (let offset = startOffset; offset <= endOffset; offset += 1) {
     const date = new Date(today);
     date.setDate(today.getDate() + offset);
-
     days.push({
       key: date.toISOString().slice(0, 10),
       label: weekdayLabels[date.getDay()],
       dateNumber: date.getDate(),
+      isToday: offset === 0,
       isPast: offset < 0,
       date,
     });
@@ -38,14 +35,22 @@ function DashboardPage({ onBack }) {
     a.getMonth() === b.getMonth() &&
     a.getDate() === b.getDate();
 
-  // Центрирование выбранного дня
+  const handleGoToToday = () => {
+    setSelectedDate(new Date());
+  };
+
   useEffect(() => {
-    if (selectedRef.current) {
-      selectedRef.current.scrollIntoView({
-        behavior: "smooth",
-        inline: "center",
-        block: "nearest",
-      });
+    // Скролл к выбранному дню по центру
+    if (calendarRef.current) {
+      const activeButton = calendarRef.current.querySelector(
+        ".inventory-page__calendar-day--active"
+      );
+      if (activeButton) {
+        const parentWidth = calendarRef.current.offsetWidth;
+        const buttonLeft = activeButton.offsetLeft;
+        const buttonWidth = activeButton.offsetWidth;
+        calendarRef.current.scrollLeft = buttonLeft - parentWidth / 2 + buttonWidth / 2;
+      }
     }
   }, [selectedDate]);
 
@@ -60,18 +65,26 @@ function DashboardPage({ onBack }) {
           {formattedSelectedDate}
         </div>
 
-        <div className="inventory-page__calendar-strip">
+        <button
+          type="button"
+          className="inventory-page__go-today-button"
+          onClick={handleGoToToday}
+        >
+          TODAY
+        </button>
+
+        <div className="inventory-page__calendar-strip" ref={calendarRef}>
           {days.map((day) => {
             const isSelected = isSameDay(day.date, selectedDate);
-
             return (
               <button
                 type="button"
                 key={day.key}
-                ref={isSelected ? selectedRef : null}
                 className={`inventory-page__calendar-day ${
                   isSelected
                     ? "inventory-page__calendar-day--active"
+                    : day.isToday
+                    ? "inventory-page__calendar-day--today"
                     : day.isPast
                     ? "inventory-page__calendar-day--past"
                     : "inventory-page__calendar-day--future"
@@ -82,20 +95,19 @@ function DashboardPage({ onBack }) {
                   {day.label}
                 </span>
 
+                <span className="inventory-page__calendar-arrow">▼</span>
+
                 <span className="inventory-page__calendar-day-circle">
                   {day.dateNumber}
                 </span>
-
-                {/* стрелочка под выбранным днем */}
-                {isSelected && (
-                  <span className="inventory-page__calendar-arrow">
-                    ▼
-                  </span>
-                )}
               </button>
             );
           })}
         </div>
+      </div>
+
+      <div className="inventory-page__content">
+        {/* Тут можно вставлять контент страницы */}
       </div>
 
       <div className="inventory-page__buttons">
