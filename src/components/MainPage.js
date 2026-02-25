@@ -47,14 +47,11 @@ function MainPage({ userId, onInventoryClick, onMapClick }) {
     <div className="main-page">
       <div className="main-page__header">
         <div className="main-page__level">LVL: {userData.level}</div>
-        <div className="main-page__health">
-          <span className="main-page__heart">♥</span>: {userData.heal_points}
         </div>
       </div>
       
       <div className="main-page__buttons">
-        <button className="main-page__button" onClick={onInventoryClick}>INVENTORY</button>
-        <button className="main-page__button" onClick={onMapClick}>MAP</button>
+        <button className="main-page__button" onClick={onInventoryClick}>DASHBOARD</button>
       </div>
       
       <div className="main-page__distance">DISTANCE: {userData.distance}Km.</div>
