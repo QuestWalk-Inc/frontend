@@ -1,17 +1,18 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import "./dashboardPage.css";
 
 function DashboardPage({ onBack }) {
-  const today = new Date();
+  const [today] = useState(() => new Date());
+  const [selectedDate, setSelectedDate] = useState(() => new Date());
+
+  const selectedRef = useRef(null);
 
   const weekdayLabels = ["S", "M", "T", "W", "T", "F", "S"];
-
-  const [selectedDate, setSelectedDate] = useState(today);
 
   const formattedSelectedDate = selectedDate.toLocaleDateString("en-GB", {
     day: "numeric",
     month: "long",
-    year: "numeric", // добавили год
+    year: "numeric",
   });
 
   const startOffset = -180;
@@ -27,7 +28,6 @@ function DashboardPage({ onBack }) {
       key: date.toISOString().slice(0, 10),
       label: weekdayLabels[date.getDay()],
       dateNumber: date.getDate(),
-      isToday: offset === 0,
       isPast: offset < 0,
       date,
     });
@@ -38,9 +38,16 @@ function DashboardPage({ onBack }) {
     a.getMonth() === b.getMonth() &&
     a.getDate() === b.getDate();
 
-  const handleGoToToday = () => {
-    setSelectedDate(new Date());
-  };
+  // Центрирование выбранного дня
+  useEffect(() => {
+    if (selectedRef.current) {
+      selectedRef.current.scrollIntoView({
+        behavior: "smooth",
+        inline: "center",
+        block: "nearest",
+      });
+    }
+  }, [selectedDate]);
 
   return (
     <div className="inventory-page">
@@ -53,14 +60,6 @@ function DashboardPage({ onBack }) {
           {formattedSelectedDate}
         </div>
 
-        <button
-          type="button"
-          className="inventory-page__go-today-button"
-          onClick={handleGoToToday}
-        >
-          TODAY
-        </button>
-
         <div className="inventory-page__calendar-strip">
           {days.map((day) => {
             const isSelected = isSameDay(day.date, selectedDate);
@@ -69,11 +68,10 @@ function DashboardPage({ onBack }) {
               <button
                 type="button"
                 key={day.key}
+                ref={isSelected ? selectedRef : null}
                 className={`inventory-page__calendar-day ${
                   isSelected
                     ? "inventory-page__calendar-day--active"
-                    : day.isToday
-                    ? "inventory-page__calendar-day--today"
                     : day.isPast
                     ? "inventory-page__calendar-day--past"
                     : "inventory-page__calendar-day--future"
@@ -83,9 +81,17 @@ function DashboardPage({ onBack }) {
                 <span className="inventory-page__calendar-day-label">
                   {day.label}
                 </span>
+
                 <span className="inventory-page__calendar-day-circle">
                   {day.dateNumber}
                 </span>
+
+                {/* стрелочка под выбранным днем */}
+                {isSelected && (
+                  <span className="inventory-page__calendar-arrow">
+                    ▼
+                  </span>
+                )}
               </button>
             );
           })}
