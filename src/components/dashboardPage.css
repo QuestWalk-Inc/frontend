@@ -51,10 +51,36 @@ body::-webkit-scrollbar { display: none; }
 .inventory-page__calendar-today {
   text-align: center;
   font-size: clamp(12px, 2vw, 18px);
-  margin-bottom: clamp(10px, 2vw, 18px);
+  margin-bottom: clamp(6px, 1.5vw, 12px);
   color: #ffd700;
 }
 
+/* TODAY button wrapper */
+.inventory-page__calendar-today-button-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-bottom: clamp(6px, 1.5vw, 12px);
+}
+
+.inventory-page__calendar-today-button {
+  font-family: 'Press Start 2P', cursive;
+  background-color: transparent;
+  color: #ffffff;
+  border: clamp(2px, 0.4vw, 4px) solid #ffd700;
+  padding: clamp(8px, 1.5vw, 14px) clamp(16px, 4vw, 40px);
+  font-size: clamp(10px, 1.8vw, 16px);
+  cursor: pointer;
+  transition: all 0.12s ease;
+}
+
+.inventory-page__calendar-today-button:hover {
+  background-color: rgba(255, 215, 0, 0.08);
+}
+.inventory-page__calendar-today-button:active {
+  transform: translateY(1px) scale(0.995);
+}
+
+/* calendar strip */
 .inventory-page__calendar-strip {
   display: flex;
   align-items: center;
@@ -68,7 +94,7 @@ body::-webkit-scrollbar { display: none; }
 
 .inventory-page__calendar-strip::-webkit-scrollbar { display: none; }
 
-/* ===== calendar day ===== */
+/* calendar day */
 .inventory-page__calendar-day {
   min-width: clamp(40px, 7vw, 52px);
   display: flex;
@@ -86,7 +112,6 @@ body::-webkit-scrollbar { display: none; }
 }
 
 .inventory-page__calendar-day-label { color: #8a8a8a; letter-spacing: 0.08em; }
-
 .inventory-page__calendar-day-circle {
   width: clamp(32px, 6vw, 44px);
   height: clamp(32px, 6vw, 44px);
@@ -121,11 +146,11 @@ body::-webkit-scrollbar { display: none; }
   background-color: rgba(255,255,255,0.06);
 }
 
-/* ===== selected arrow ===== */
+/* selected arrow under selected day */
 .inventory-page__calendar-selected-arrow {
   position: absolute;
-  top: 1%; /* между буквой дня и цифрой */
-  transform: translate(-50%, -50%);
+  top: calc(100% + 4px); /* под кружком */
+  transform: translateX(-50%);
   font-size: clamp(12px, 2vw, 18px);
   color: #ffd700;
   pointer-events: none;
@@ -133,10 +158,10 @@ body::-webkit-scrollbar { display: none; }
   z-index: 5;
 }
 
-/* ===== title ===== */
+/* title */
 .inventory-page__title { color: #ffd700; font-size: clamp(14px,2.5vw,20px); text-align:center; }
 
-/* ===== content area ===== */
+/* content */
 .inventory-page__content {
   flex: 1 1 auto;
   display: flex;
@@ -150,7 +175,7 @@ body::-webkit-scrollbar { display: none; }
   box-sizing: border-box;
 }
 
-/* ===== buttons area (fixed at bottom) ===== */
+/* BACK button fixed bottom */
 .inventory-page__buttons {
   position: fixed;
   bottom: clamp(12px,2.5vw,20px);
@@ -167,7 +192,6 @@ body::-webkit-scrollbar { display: none; }
   box-sizing: border-box;
   z-index: 10;
 }
-
 .inventory-page__back-button {
   font-family: 'Press Start 2P', cursive;
   background-color: transparent;

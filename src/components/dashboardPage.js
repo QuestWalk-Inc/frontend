@@ -67,17 +67,18 @@ function DashboardPage({ onBack }) {
       </div>
 
       <div className="inventory-page__calendar">
-        <div className="inventory-page__calendar-today">
-          {formattedSelectedDate}
-        </div>
+        <div className="inventory-page__calendar-today">{formattedSelectedDate}</div>
 
-        <button
-          type="button"
-          className="inventory-page__go-today-button"
-          onClick={handleGoToToday}
-        >
-          TODAY
-        </button>
+        {/* TODAY button centered above arrow */}
+        <div className="inventory-page__calendar-today-button-wrapper">
+          <button
+            type="button"
+            className="inventory-page__calendar-today-button"
+            onClick={handleGoToToday}
+          >
+            TODAY
+          </button>
+        </div>
 
         <div className="inventory-page__calendar-strip" ref={calendarRef}>
           {days.map((day) => {
@@ -107,7 +108,6 @@ function DashboardPage({ onBack }) {
             );
           })}
 
-          {/* стрелка для выбранного дня */}
           <div className="inventory-page__calendar-selected-arrow">▼</div>
         </div>
       </div>
