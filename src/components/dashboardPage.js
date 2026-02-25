@@ -65,4 +65,4 @@ function DashboardPage({ onBack }) {
   );
 }
 
-export default InventoryPage;
+export default DashboardPage;
