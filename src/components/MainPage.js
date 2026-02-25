@@ -47,12 +47,13 @@ function MainPage({ userId, onInventoryClick, onMapClick }) {
     <div className="main-page">
       <div className="main-page__header">
         <div className="main-page__level">LVL: {userData.level}</div>
-        </div>
       </div>
-      
       <div className="main-page__buttons">
-        <button className="main-page__button" onClick={onInventoryClick}>DASHBOARD</button>
+        <button className="main-page__button" onClick={onInventoryClick}>
+          DASHBOARD
+        </button>
       </div>
+    </div>
   );
 }
 
