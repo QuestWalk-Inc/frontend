@@ -134,14 +134,22 @@ function DashboardPage({ onBack }) {
           <ul className="inventory-page__workouts-list">
             {workouts
               .filter((workout) => workout.dateKey === selectedDateKey)
-              .map((workout) => (
-                <li
-                  key={workout.id}
-                  className="inventory-page__workout-item"
-                >
-                  {workout.name}
-                </li>
-              ))}
+              .map((workout, index) => {
+                const [label, number] = (workout.name || "").split(" ");
+                return (
+                  <li
+                    key={workout.id}
+                    className="inventory-page__workout-item"
+                  >
+                    <span className="inventory-page__workout-label">
+                      {label || "Workout"}
+                    </span>
+                    <span className="inventory-page__workout-number-circle">
+                      {number || index + 1}
+                    </span>
+                  </li>
+                );
+              })}
           </ul>
         )}
       </div>
