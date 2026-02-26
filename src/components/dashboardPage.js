@@ -1,10 +1,12 @@
 import { useState, useEffect, useRef } from "react";
 import "./dashboardPage.css";
+import { createNewWorkoutForDate } from "./newWorkout";
 
 function DashboardPage({ onBack }) {
   const today = new Date();
   const weekdayLabels = ["S", "M", "T", "W", "T", "F", "S"];
   const [selectedDate, setSelectedDate] = useState(today);
+  const [workouts, setWorkouts] = useState([]);
   const calendarRef = useRef(null);
   const arrowRef = useRef(null);
 
@@ -17,6 +19,8 @@ function DashboardPage({ onBack }) {
   const startOffset = -180;
   const endOffset = 365;
   const days = [];
+
+  const selectedDateKey = selectedDate.toISOString().slice(0, 10);
 
   for (let offset = startOffset; offset <= endOffset; offset += 1) {
     const date = new Date(today);
@@ -37,6 +41,10 @@ function DashboardPage({ onBack }) {
     a.getDate() === b.getDate();
 
   const handleGoToToday = () => setSelectedDate(new Date());
+
+  const handleNewWorkout = () => {
+    createNewWorkoutForDate(selectedDate, setWorkouts);
+  };
 
   // Центрирование выбранного дня под стрелкой
   useEffect(() => {
@@ -116,10 +124,37 @@ function DashboardPage({ onBack }) {
         })}
       </div>
 
-      <div className="inventory-page__content">{/* контент */}</div>
+      <div className="inventory-page__content">
+        {workouts.filter((workout) => workout.dateKey === selectedDateKey)
+          .length === 0 ? (
+          <div className="inventory-page__no-workouts">
+            No workouts for this date yet.
+          </div>
+        ) : (
+          <ul className="inventory-page__workouts-list">
+            {workouts
+              .filter((workout) => workout.dateKey === selectedDateKey)
+              .map((workout) => (
+                <li
+                  key={workout.id}
+                  className="inventory-page__workout-item"
+                >
+                  {workout.name}
+                </li>
+              ))}
+          </ul>
+        )}
+      </div>
 
       {/* BACK кнопка внизу */}
       <div className="inventory-page__buttons">
+        <button
+          type="button"
+          className="inventory-page__new-workout-button"
+          onClick={handleNewWorkout}
+        >
+          New Workout
+        </button>
         <button className="inventory-page__back-button" onClick={onBack}>
           BACK
         </button>
