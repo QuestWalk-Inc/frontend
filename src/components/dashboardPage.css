@@ -125,7 +125,10 @@
 
 .inventory-page__no-workouts {
   opacity: 0.7;
-  font-size: clamp(12px, 2vw, 16px);
+  font-size: clamp(10px, 1.8vw, 14px);
+  font-family: 'Press Start 2P', cursive;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
 }
 
 .inventory-page__workouts-list {
