@@ -1,6 +1,14 @@
 import { useState, useEffect, useRef } from "react";
 import "./dashboardPage.css";
-import { createNewWorkoutForDate } from "./newWorkout";
+import {
+  openNewWorkoutDraft,
+  addExerciseToDraft,
+  updateExerciseInDraft,
+  saveWorkoutDraft,
+  deleteWorkoutDraft,
+  deleteWorkoutById,
+  startEditingWorkout,
+} from "./newWorkout";
 
 function DashboardPage({ onBack }) {
   const today = new Date();
@@ -9,6 +17,7 @@ function DashboardPage({ onBack }) {
   const [workouts, setWorkouts] = useState([]);
   const [isNewWorkoutOpen, setIsNewWorkoutOpen] = useState(false);
   const [newWorkoutExercises, setNewWorkoutExercises] = useState([]);
+  const [editingWorkoutId, setEditingWorkoutId] = useState(null);
   const calendarRef = useRef(null);
   const arrowRef = useRef(null);
 
@@ -45,40 +54,52 @@ function DashboardPage({ onBack }) {
   const handleGoToToday = () => setSelectedDate(new Date());
 
   const handleNewWorkout = () => {
-    setIsNewWorkoutOpen(true);
-    setNewWorkoutExercises([]);
-  };
-
-  const handleAddExercise = () => {
-    setNewWorkoutExercises((prev) => [
-      ...prev,
-      {
-        id: `${Date.now()}-${Math.random()}`,
-        name: "",
-        repeats: "1",
-        tries: "1",
-      },
-    ]);
-  };
-
-  const handleExerciseChange = (id, field, value) => {
-    setNewWorkoutExercises((prev) =>
-      prev.map((exercise) =>
-        exercise.id === id ? { ...exercise, [field]: value } : exercise
-      )
+    openNewWorkoutDraft(
+      setIsNewWorkoutOpen,
+      setNewWorkoutExercises,
+      setEditingWorkoutId
     );
   };
 
+  const handleAddExercise = () => {
+    addExerciseToDraft(setNewWorkoutExercises);
+  };
+
+  const handleExerciseChange = (id, field, value) => {
+    updateExerciseInDraft(setNewWorkoutExercises, id, field, value);
+  };
+
   const handleSaveWorkout = () => {
-    if (!selectedDate) return;
-    createNewWorkoutForDate(selectedDate, setWorkouts, newWorkoutExercises);
-    setIsNewWorkoutOpen(false);
-    setNewWorkoutExercises([]);
+    saveWorkoutDraft({
+      selectedDate,
+      editingWorkoutId,
+      newWorkoutExercises,
+      setWorkouts,
+      setIsNewWorkoutOpen,
+      setNewWorkoutExercises,
+      setEditingWorkoutId,
+    });
   };
 
   const handleDeleteWorkoutDraft = () => {
-    setIsNewWorkoutOpen(false);
-    setNewWorkoutExercises([]);
+    deleteWorkoutDraft(
+      setIsNewWorkoutOpen,
+      setNewWorkoutExercises,
+      setEditingWorkoutId
+    );
+  };
+
+  const handleDeleteWorkout = (workoutId) => {
+    deleteWorkoutById(setWorkouts, workoutId);
+  };
+
+  const handleEditWorkout = (workout) => {
+    startEditingWorkout(
+      workout,
+      setIsNewWorkoutOpen,
+      setEditingWorkoutId,
+      setNewWorkoutExercises
+    );
   };
 
   // Центрирование выбранного дня под стрелкой
@@ -171,17 +192,56 @@ function DashboardPage({ onBack }) {
               .filter((workout) => workout.dateKey === selectedDateKey)
               .map((workout, index) => {
                 const [label, number] = (workout.name || "").split(" ");
+                const exercises = workout.exercises || [];
                 return (
                   <li
                     key={workout.id}
                     className="inventory-page__workout-item"
                   >
-                    <span className="inventory-page__workout-label">
-                      {label || "Workout"}
-                    </span>
-                    <span className="inventory-page__workout-number-circle">
-                      {number || index + 1}
-                    </span>
+                    <div className="inventory-page__workout-header">
+                      <span className="inventory-page__workout-label">
+                        {label || "Workout"}
+                      </span>
+                      <span className="inventory-page__workout-number-circle">
+                        {number || index + 1}
+                      </span>
+                    </div>
+
+                    {exercises.length > 0 && (
+                      <ul className="inventory-page__workout-exercises">
+                        {exercises.map((exercise) => (
+                          <li
+                            key={exercise.id}
+                            className="inventory-page__workout-exercise"
+                          >
+                            <span className="inventory-page__workout-exercise-name">
+                              {exercise.name || "Exercise"}
+                            </span>
+                            <span className="inventory-page__workout-exercise-meta">
+                              {exercise.repeats || "1"} repeats ×{" "}
+                              {exercise.tries || "1"} tries
+                            </span>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+
+                    <div className="inventory-page__workout-actions">
+                      <button
+                        type="button"
+                        className="inventory-page__workout-action-button inventory-page__workout-action-button--edit"
+                        onClick={() => handleEditWorkout(workout)}
+                      >
+                        Edit workout
+                      </button>
+                      <button
+                        type="button"
+                        className="inventory-page__workout-action-button inventory-page__workout-action-button--delete"
+                        onClick={() => handleDeleteWorkout(workout.id)}
+                      >
+                        Delete workout
+                      </button>
+                    </div>
                   </li>
                 );
               })}
@@ -191,7 +251,7 @@ function DashboardPage({ onBack }) {
         {isNewWorkoutOpen && (
           <div className="inventory-page__new-workout-panel">
             <div className="inventory-page__new-workout-title">
-              New Workout
+              {editingWorkoutId ? "Edit Workout" : "New Workout"}
             </div>
 
             <button
