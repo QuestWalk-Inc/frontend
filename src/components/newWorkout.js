@@ -1,4 +1,8 @@
-export function createNewWorkoutForDate(selectedDate, setWorkouts) {
+export function createNewWorkoutForDate(
+  selectedDate,
+  setWorkouts,
+  exercises = []
+) {
   if (!selectedDate || !setWorkouts) return;
 
   const dateKey = selectedDate.toISOString().slice(0, 10);
@@ -11,6 +15,7 @@ export function createNewWorkoutForDate(selectedDate, setWorkouts) {
       id: `${dateKey}-${Date.now()}`,
       dateKey,
       name: `Workout ${newWorkoutNumber}`,
+      exercises,
     };
 
     return [...prev, newWorkout];

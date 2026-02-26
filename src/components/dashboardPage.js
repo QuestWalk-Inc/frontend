@@ -7,6 +7,8 @@ function DashboardPage({ onBack }) {
   const weekdayLabels = ["S", "M", "T", "W", "T", "F", "S"];
   const [selectedDate, setSelectedDate] = useState(today);
   const [workouts, setWorkouts] = useState([]);
+  const [isNewWorkoutOpen, setIsNewWorkoutOpen] = useState(false);
+  const [newWorkoutExercises, setNewWorkoutExercises] = useState([]);
   const calendarRef = useRef(null);
   const arrowRef = useRef(null);
 
@@ -43,7 +45,40 @@ function DashboardPage({ onBack }) {
   const handleGoToToday = () => setSelectedDate(new Date());
 
   const handleNewWorkout = () => {
-    createNewWorkoutForDate(selectedDate, setWorkouts);
+    setIsNewWorkoutOpen(true);
+    setNewWorkoutExercises([]);
+  };
+
+  const handleAddExercise = () => {
+    setNewWorkoutExercises((prev) => [
+      ...prev,
+      {
+        id: `${Date.now()}-${Math.random()}`,
+        name: "",
+        repeats: "1",
+        tries: "1",
+      },
+    ]);
+  };
+
+  const handleExerciseChange = (id, field, value) => {
+    setNewWorkoutExercises((prev) =>
+      prev.map((exercise) =>
+        exercise.id === id ? { ...exercise, [field]: value } : exercise
+      )
+    );
+  };
+
+  const handleSaveWorkout = () => {
+    if (!selectedDate) return;
+    createNewWorkoutForDate(selectedDate, setWorkouts, newWorkoutExercises);
+    setIsNewWorkoutOpen(false);
+    setNewWorkoutExercises([]);
+  };
+
+  const handleDeleteWorkoutDraft = () => {
+    setIsNewWorkoutOpen(false);
+    setNewWorkoutExercises([]);
   };
 
   // Центрирование выбранного дня под стрелкой
@@ -151,6 +186,104 @@ function DashboardPage({ onBack }) {
                 );
               })}
           </ul>
+        )}
+
+        {isNewWorkoutOpen && (
+          <div className="inventory-page__new-workout-panel">
+            <div className="inventory-page__new-workout-title">
+              New Workout
+            </div>
+
+            <button
+              type="button"
+              className="inventory-page__new-workout-add-exercise"
+              onClick={handleAddExercise}
+            >
+              Add new exercise +
+            </button>
+
+            {newWorkoutExercises.length > 0 && (
+              <ul className="inventory-page__new-workout-exercises">
+                {newWorkoutExercises.map((exercise) => (
+                  <li
+                    key={exercise.id}
+                    className="inventory-page__new-workout-exercise-row"
+                  >
+                    <input
+                      type="text"
+                      className="inventory-page__new-workout-input"
+                      placeholder="Exercise name"
+                      value={exercise.name}
+                      onChange={(e) =>
+                        handleExerciseChange(
+                          exercise.id,
+                          "name",
+                          e.target.value
+                        )
+                      }
+                    />
+                    <select
+                      className="inventory-page__new-workout-select"
+                      value={exercise.repeats}
+                      onChange={(e) =>
+                        handleExerciseChange(
+                          exercise.id,
+                          "repeats",
+                          e.target.value
+                        )
+                      }
+                    >
+                      {[...Array(20)].map((_, idx) => {
+                        const value = String(idx + 1);
+                        return (
+                          <option key={value} value={value}>
+                            {value} repeats
+                          </option>
+                        );
+                      })}
+                    </select>
+                    <select
+                      className="inventory-page__new-workout-select"
+                      value={exercise.tries}
+                      onChange={(e) =>
+                        handleExerciseChange(
+                          exercise.id,
+                          "tries",
+                          e.target.value
+                        )
+                      }
+                    >
+                      {[...Array(10)].map((_, idx) => {
+                        const value = String(idx + 1);
+                        return (
+                          <option key={value} value={value}>
+                            {value} tries
+                          </option>
+                        );
+                      })}
+                    </select>
+                  </li>
+                ))}
+              </ul>
+            )}
+
+            <div className="inventory-page__new-workout-actions">
+              <button
+                type="button"
+                className="inventory-page__new-workout-save-button"
+                onClick={handleSaveWorkout}
+              >
+                Save workout
+              </button>
+              <button
+                type="button"
+                className="inventory-page__new-workout-delete-button"
+                onClick={handleDeleteWorkoutDraft}
+              >
+                Delete workout
+              </button>
+            </div>
+          </div>
         )}
       </div>
 
