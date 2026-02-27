@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import "./dashboardPage.css";
+import { API_BASE_URL } from "../constants";
 import {
   openNewWorkoutDraft,
   addExerciseToDraft,
@@ -10,7 +11,7 @@ import {
   startEditingWorkout,
 } from "./newWorkout";
 
-function DashboardPage({ onBack }) {
+function DashboardPage({ userId, onBack }) {
   const today = new Date();
   const weekdayLabels = ["S", "M", "T", "W", "T", "F", "S"];
   const [selectedDate, setSelectedDate] = useState(today);
@@ -18,6 +19,8 @@ function DashboardPage({ onBack }) {
   const [isNewWorkoutOpen, setIsNewWorkoutOpen] = useState(false);
   const [newWorkoutExercises, setNewWorkoutExercises] = useState([]);
   const [editingWorkoutId, setEditingWorkoutId] = useState(null);
+  const [saveError, setSaveError] = useState(null);
+  const [isSaving, setIsSaving] = useState(false);
   const calendarRef = useRef(null);
   const arrowRef = useRef(null);
 
@@ -69,16 +72,63 @@ function DashboardPage({ onBack }) {
     updateExerciseInDraft(setNewWorkoutExercises, id, field, value);
   };
 
-  const handleSaveWorkout = () => {
-    saveWorkoutDraft({
-      selectedDate,
-      editingWorkoutId,
-      newWorkoutExercises,
-      setWorkouts,
-      setIsNewWorkoutOpen,
-      setNewWorkoutExercises,
-      setEditingWorkoutId,
-    });
+  const handleSaveWorkout = async () => {
+    if (!selectedDate || !newWorkoutExercises.length || !userId) {
+      saveWorkoutDraft({
+        selectedDate,
+        editingWorkoutId,
+        newWorkoutExercises,
+        setWorkouts,
+        setIsNewWorkoutOpen,
+        setNewWorkoutExercises,
+        setEditingWorkoutId,
+      });
+      return;
+    }
+
+    setIsSaving(true);
+    setSaveError(null);
+
+    try {
+      const payloads = newWorkoutExercises.map((exercise) => ({
+        user_id: Number(userId),
+        date: selectedDate.toISOString(),
+        name_exercise: exercise.name || "Exercise",
+        repeat: Number(exercise.repeats || 1),
+        tries: Number(exercise.tries || 1),
+      }));
+
+      const responses = await Promise.all(
+        payloads.map((body) =>
+          fetch(`${API_BASE_URL}/trainings`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(body),
+          })
+        )
+      );
+
+      const failed = responses.find((res) => !res.ok);
+      if (failed) {
+        throw new Error("Failed to save workout to database");
+      }
+
+      saveWorkoutDraft({
+        selectedDate,
+        editingWorkoutId,
+        newWorkoutExercises,
+        setWorkouts,
+        setIsNewWorkoutOpen,
+        setNewWorkoutExercises,
+        setEditingWorkoutId,
+      });
+    } catch (error) {
+      setSaveError(error.message || "Unknown error while saving workout");
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const handleDeleteWorkoutDraft = () => {
@@ -181,6 +231,11 @@ function DashboardPage({ onBack }) {
       </div>
 
       <div className="inventory-page__content">
+        {saveError && (
+          <div className="inventory-page__error-message">
+            {saveError}
+          </div>
+        )}
         {workouts.filter((workout) => workout.dateKey === selectedDateKey)
           .length === 0 ? (
           <div className="inventory-page__no-workouts">
@@ -332,8 +387,9 @@ function DashboardPage({ onBack }) {
                 type="button"
                 className="inventory-page__new-workout-save-button"
                 onClick={handleSaveWorkout}
+                disabled={isSaving}
               >
-                Save workout
+                {isSaving ? "Saving..." : "Save workout"}
               </button>
               <button
                 type="button"
