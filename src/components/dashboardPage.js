@@ -1,6 +1,11 @@
 import { useState, useEffect, useRef } from "react";
 import "./dashboardPage.css";
-import { API_BASE_URL } from "../constants";
+import {
+  fetchTrainings,
+  createTraining,
+  updateTraining,
+  deleteTraining,
+} from "../apiManipulations";
 import {
   openNewWorkoutDraft,
   addExerciseToDraft,
@@ -33,97 +38,16 @@ function DashboardPage({ userId, onBack }) {
       return;
     }
 
-    const fetchWorkouts = async () => {
+    const loadWorkouts = async () => {
       try {
-        const response = await fetch(`${API_BASE_URL}/trainings/${userId}`);
-
-        if (response.status === 404) {
-          // No trainings yet for this user
-          setWorkouts([]);
-          return;
-        }
-
-        if (!response.ok) {
-          console.error("Failed to load workouts", response.status);
-          return;
-        }
-
-        const data = await response.json();
-
-        // Group trainings by date and workout_time into workouts.
-        // Each training now stores exercises in name_exercise JSONB:
-        // [{ exercise_name: string, reapeats: number, tries: number }, ...]
-        const workoutsByKey = {};
-
-        data.forEach((item, index) => {
-          if (!item.date) {
-            return;
-          }
-
-          const dateKey = new Date(item.date).toISOString().slice(0, 10);
-          const workoutTime = item.workout_time || null;
-
-          // Use DB id when available so we don't collapse distinct workouts
-          const baseKey = `${dateKey}-${workoutTime || "notime"}`;
-          const key = item.id ? `${baseKey}-${item.id}` : `${baseKey}-${index}`;
-
-          if (!workoutsByKey[key]) {
-            workoutsByKey[key] = {
-              id: `${key}`,
-              dateKey,
-              time: workoutTime,
-              name: "Workout 1",
-              exercises: [],
-            };
-          }
-
-          // Normalise name_exercise into an array of exercise objects
-          let rawExercises = [];
-
-          if (Array.isArray(item.name_exercise)) {
-            rawExercises = item.name_exercise;
-          } else if (
-            item.name_exercise &&
-            typeof item.name_exercise === "object"
-          ) {
-            // Single JSON object
-            rawExercises = [item.name_exercise];
-          } else if (typeof item.name_exercise === "string") {
-            // Backwards compatibility: plain string + repeat/tries columns
-            rawExercises = [
-              {
-                exercise_name: item.name_exercise,
-                reapeats: item.repeat ?? 1,
-                tries: item.tries ?? 1,
-              },
-            ];
-          }
-
-          const mappedExercises = rawExercises.map((exercise, exIndex) => ({
-            id: `${item.id || index}-${exIndex}`,
-            name: exercise.exercise_name || "Exercise",
-            repeats: String(
-              typeof exercise.reapeats === "number"
-                ? exercise.reapeats
-                : exercise.repeat ?? item.repeat ?? 1
-            ),
-            tries: String(
-              typeof exercise.tries === "number"
-                ? exercise.tries
-                : item.tries ?? 1
-            ),
-          }));
-
-          workoutsByKey[key].exercises.push(...mappedExercises);
-        });
-
-        setWorkouts(Object.values(workoutsByKey));
+        const workoutsData = await fetchTrainings(userId);
+        setWorkouts(workoutsData);
       } catch (error) {
         console.error("Error loading workouts", error);
       }
     };
 
-    fetchWorkouts();
+    loadWorkouts();
   }, [userId]);
 
   const formattedSelectedDate = selectedDate.toLocaleDateString("en-GB", {
@@ -243,17 +167,11 @@ function DashboardPage({ userId, onBack }) {
             payload.workout_time = workoutDateTimeISO;
           }
 
-          response = await fetch(
-            `${API_BASE_URL}/trainings/${userId}/${dateKey}/${encodeURIComponent(
-              originalWorkout.time
-            )}`,
-            {
-              method: "PATCH",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify(payload),
-            }
+          response = await updateTraining(
+            userId,
+            dateKey,
+            originalWorkout.time,
+            payload
           );
         } else {
           // Fallback: if we don't have enough info to PATCH, just save locally
@@ -271,13 +189,7 @@ function DashboardPage({ userId, onBack }) {
           body.workout_time = workoutDateTimeISO;
         }
 
-        response = await fetch(`${API_BASE_URL}/trainings`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(body),
-        });
+        response = await createTraining(body);
       }
 
       if (!response.ok) {
@@ -318,13 +230,10 @@ function DashboardPage({ userId, onBack }) {
     }
 
     try {
-      const response = await fetch(
-        `${API_BASE_URL}/trainings/${userId}/${workout.dateKey}/${encodeURIComponent(
-          workout.time
-        )}`,
-        {
-          method: "DELETE",
-        }
+      const response = await deleteTraining(
+        userId,
+        workout.dateKey,
+        workout.time
       );
 
       if (response.status === 404) {

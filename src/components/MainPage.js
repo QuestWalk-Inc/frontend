@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import "./MainPage.css";
-import { API_BASE_URL } from "../constants";
+import { fetchUser } from "../apiManipulations";
 
 function MainPage({ userId, onInventoryClick, onMapClick }) {
   const [userData, setUserData] = useState(null);
@@ -9,19 +9,12 @@ function MainPage({ userId, onInventoryClick, onMapClick }) {
   useEffect(() => {
     const loadUser = async () => {
       try {
-        const response = await fetch(
-          `${API_BASE_URL}/users/${userId}`
-        );
-
-        if (!response.ok) throw new Error("User not found");
-
-        const data = await response.json();
+        const data = await fetchUser(userId);
         setUserData(data);
       } catch (err) {
         setError(err.message);
       }
     };
-
 
     loadUser();
   }, [userId]);
