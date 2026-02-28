@@ -49,8 +49,8 @@ function DashboardPage({ userId, onBack }) {
 
         const data = await response.json();
 
-        // Group trainings by date into workouts
-        const workoutsByDateKey = {};
+        // Group trainings by date and workout_time into workouts
+        const workoutsByKey = {};
 
         data.forEach((item, index) => {
           if (!item.date) {
@@ -58,17 +58,20 @@ function DashboardPage({ userId, onBack }) {
           }
 
           const dateKey = new Date(item.date).toISOString().slice(0, 10);
+          const workoutTime = item.workout_time || null;
+          const key = `${dateKey}-${workoutTime || "notime"}-${index}`;
 
-          if (!workoutsByDateKey[dateKey]) {
-            workoutsByDateKey[dateKey] = {
-              id: `${dateKey}-db-${index}`,
+          if (!workoutsByKey[key]) {
+            workoutsByKey[key] = {
+              id: `${key}`,
               dateKey,
+              time: workoutTime,
               name: "Workout 1",
               exercises: [],
             };
           }
 
-          workoutsByDateKey[dateKey].exercises.push({
+          workoutsByKey[key].exercises.push({
             id: item.id,
             name: item.name_exercise || "Exercise",
             repeats: String(item.repeat ?? 1),
@@ -76,7 +79,7 @@ function DashboardPage({ userId, onBack }) {
           });
         });
 
-        setWorkouts(Object.values(workoutsByDateKey));
+        setWorkouts(Object.values(workoutsByKey));
       } catch (error) {
         console.error("Error loading workouts", error);
       }
@@ -135,12 +138,26 @@ function DashboardPage({ userId, onBack }) {
   };
 
   const handleSaveWorkout = async () => {
+    // Compute a concrete workout datetime in ISO, if time is provided
+    let workoutDateTimeISO = null;
+    if (newWorkoutTime && selectedDate) {
+      const [hoursStr, minutesStr] = newWorkoutTime.split(":");
+      const hours = Number(hoursStr);
+      const minutes = Number(minutesStr);
+
+      if (!Number.isNaN(hours) && !Number.isNaN(minutes)) {
+        const workoutDateTime = new Date(selectedDate);
+        workoutDateTime.setHours(hours, minutes, 0, 0);
+        workoutDateTimeISO = workoutDateTime.toISOString();
+      }
+    }
+
     if (!selectedDate || !newWorkoutExercises.length || !userId) {
       saveWorkoutDraft({
         selectedDate,
         editingWorkoutId,
         newWorkoutExercises,
-        workoutTime: newWorkoutTime,
+        workoutTime: workoutDateTimeISO,
         setWorkouts,
         setIsNewWorkoutOpen,
         setNewWorkoutExercises,
@@ -162,16 +179,8 @@ function DashboardPage({ userId, onBack }) {
           tries: Number(exercise.tries || 1),
         };
 
-        if (newWorkoutTime) {
-          const [hoursStr, minutesStr] = newWorkoutTime.split(":");
-          const hours = Number(hoursStr);
-          const minutes = Number(minutesStr);
-
-          if (!Number.isNaN(hours) && !Number.isNaN(minutes)) {
-            const workoutDateTime = new Date(selectedDate);
-            workoutDateTime.setHours(hours, minutes, 0, 0);
-            body.workout_time = workoutDateTime.toISOString();
-          }
+        if (workoutDateTimeISO) {
+          body.workout_time = workoutDateTimeISO;
         }
 
         return body;
@@ -198,7 +207,7 @@ function DashboardPage({ userId, onBack }) {
         selectedDate,
         editingWorkoutId,
         newWorkoutExercises,
-        workoutTime: newWorkoutTime,
+        workoutTime: workoutDateTimeISO,
         setWorkouts,
         setIsNewWorkoutOpen,
         setNewWorkoutExercises,
@@ -223,13 +232,15 @@ function DashboardPage({ userId, onBack }) {
     // Optimistically remove from UI
     deleteWorkoutById(setWorkouts, workout.id);
 
-    if (!userId || !workout?.dateKey) {
+    if (!userId || !workout?.dateKey || !workout?.time) {
       return;
     }
 
     try {
       const response = await fetch(
-        `${API_BASE_URL}/trainings/${userId}/${workout.dateKey}`,
+        `${API_BASE_URL}/trainings/${userId}/${workout.dateKey}/${encodeURIComponent(
+          workout.time
+        )}`,
         {
           method: "DELETE",
         }

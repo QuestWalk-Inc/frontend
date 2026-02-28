@@ -17,7 +17,8 @@ export function createNewWorkoutForDate(
       dateKey,
       name: `Workout ${newWorkoutNumber}`,
       exercises,
-      time: workoutTime,
+      // Store full workout datetime ISO string (used for backend delete)
+      time: workoutTime || null,
     };
 
     return [...prev, newWorkout];
@@ -129,7 +130,18 @@ export function startEditingWorkout(
     (workout.exercises || []).map((exercise) => ({ ...exercise }))
   );
   if (setNewWorkoutTime) {
-    setNewWorkoutTime(workout.time || "");
+    if (workout.time) {
+      try {
+        const d = new Date(workout.time);
+        const hours = String(d.getHours()).padStart(2, "0");
+        const minutes = String(d.getMinutes()).padStart(2, "0");
+        setNewWorkoutTime(`${hours}:${minutes}`);
+      } catch {
+        setNewWorkoutTime("");
+      }
+    } else {
+      setNewWorkoutTime("");
+    }
   }
 }
 
