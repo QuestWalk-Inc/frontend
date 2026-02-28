@@ -24,6 +24,66 @@ function DashboardPage({ userId, onBack }) {
   const calendarRef = useRef(null);
   const arrowRef = useRef(null);
 
+  // Load workouts from backend so they persist across navigation
+  useEffect(() => {
+    if (!userId) {
+      setWorkouts([]);
+      return;
+    }
+
+    const fetchWorkouts = async () => {
+      try {
+        const response = await fetch(`${API_BASE_URL}/trainings/${userId}`);
+
+        if (response.status === 404) {
+          // No trainings yet for this user
+          setWorkouts([]);
+          return;
+        }
+
+        if (!response.ok) {
+          console.error("Failed to load workouts", response.status);
+          return;
+        }
+
+        const data = await response.json();
+
+        // Group trainings by date into workouts
+        const workoutsByDateKey = {};
+
+        data.forEach((item, index) => {
+          if (!item.date) {
+            return;
+          }
+
+          const dateKey = new Date(item.date).toISOString().slice(0, 10);
+
+          if (!workoutsByDateKey[dateKey]) {
+            workoutsByDateKey[dateKey] = {
+              id: `${dateKey}-db-${index}`,
+              dateKey,
+              name: "Workout 1",
+              exercises: [],
+            };
+          }
+
+          workoutsByDateKey[dateKey].exercises.push({
+            id: item.id,
+            name: item.name_exercise || "Exercise",
+            repeats: String(item.repeat ?? 1),
+            tries: String(item.tries ?? 1),
+          });
+        });
+
+        setWorkouts(Object.values(workoutsByDateKey));
+      } catch (error) {
+        console.error("Error loading workouts", error);
+      }
+    };
+
+    fetchWorkouts();
+  }, [userId]);
+
   const formattedSelectedDate = selectedDate.toLocaleDateString("en-GB", {
     day: "numeric",
     month: "long",
