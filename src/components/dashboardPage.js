@@ -18,6 +18,7 @@ function DashboardPage({ userId, onBack }) {
   const [workouts, setWorkouts] = useState([]);
   const [isNewWorkoutOpen, setIsNewWorkoutOpen] = useState(false);
   const [newWorkoutExercises, setNewWorkoutExercises] = useState([]);
+  const [newWorkoutTime, setNewWorkoutTime] = useState("");
   const [editingWorkoutId, setEditingWorkoutId] = useState(null);
   const [saveError, setSaveError] = useState(null);
   const [isSaving, setIsSaving] = useState(false);
@@ -120,7 +121,8 @@ function DashboardPage({ userId, onBack }) {
     openNewWorkoutDraft(
       setIsNewWorkoutOpen,
       setNewWorkoutExercises,
-      setEditingWorkoutId
+      setEditingWorkoutId,
+      setNewWorkoutTime
     );
   };
 
@@ -138,6 +140,7 @@ function DashboardPage({ userId, onBack }) {
         selectedDate,
         editingWorkoutId,
         newWorkoutExercises,
+        workoutTime: newWorkoutTime,
         setWorkouts,
         setIsNewWorkoutOpen,
         setNewWorkoutExercises,
@@ -150,13 +153,29 @@ function DashboardPage({ userId, onBack }) {
     setSaveError(null);
 
     try {
-      const payloads = newWorkoutExercises.map((exercise) => ({
-        user_id: Number(userId),
-        date: selectedDate.toISOString(),
-        name_exercise: exercise.name || "Exercise",
-        repeat: Number(exercise.repeats || 1),
-        tries: Number(exercise.tries || 1),
-      }));
+      const payloads = newWorkoutExercises.map((exercise) => {
+        const body = {
+          user_id: Number(userId),
+          date: selectedDate.toISOString(),
+          name_exercise: exercise.name || "Exercise",
+          repeat: Number(exercise.repeats || 1),
+          tries: Number(exercise.tries || 1),
+        };
+
+        if (newWorkoutTime) {
+          const [hoursStr, minutesStr] = newWorkoutTime.split(":");
+          const hours = Number(hoursStr);
+          const minutes = Number(minutesStr);
+
+          if (!Number.isNaN(hours) && !Number.isNaN(minutes)) {
+            const workoutDateTime = new Date(selectedDate);
+            workoutDateTime.setHours(hours, minutes, 0, 0);
+            body.workout_time = workoutDateTime.toISOString();
+          }
+        }
+
+        return body;
+      });
 
       const responses = await Promise.all(
         payloads.map((body) =>
@@ -179,6 +198,7 @@ function DashboardPage({ userId, onBack }) {
         selectedDate,
         editingWorkoutId,
         newWorkoutExercises,
+        workoutTime: newWorkoutTime,
         setWorkouts,
         setIsNewWorkoutOpen,
         setNewWorkoutExercises,
@@ -236,7 +256,8 @@ function DashboardPage({ userId, onBack }) {
       workout,
       setIsNewWorkoutOpen,
       setEditingWorkoutId,
-      setNewWorkoutExercises
+      setNewWorkoutExercises,
+      setNewWorkoutTime
     );
   };
 
@@ -395,6 +416,18 @@ function DashboardPage({ userId, onBack }) {
           <div className="inventory-page__new-workout-panel">
             <div className="inventory-page__new-workout-title">
               {editingWorkoutId ? "Edit Workout" : "New Workout"}
+            </div>
+
+            <div className="inventory-page__new-workout-time-row">
+              <label className="inventory-page__new-workout-time-label">
+                Time:
+                <input
+                  type="time"
+                  className="inventory-page__new-workout-input"
+                  value={newWorkoutTime}
+                  onChange={(e) => setNewWorkoutTime(e.target.value)}
+                />
+              </label>
             </div>
 
             <button

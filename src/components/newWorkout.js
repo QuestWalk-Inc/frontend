@@ -1,7 +1,8 @@
 export function createNewWorkoutForDate(
   selectedDate,
   setWorkouts,
-  exercises = []
+  exercises = [],
+  workoutTime
 ) {
   if (!selectedDate || !setWorkouts) return;
 
@@ -16,6 +17,7 @@ export function createNewWorkoutForDate(
       dateKey,
       name: `Workout ${newWorkoutNumber}`,
       exercises,
+      time: workoutTime,
     };
 
     return [...prev, newWorkout];
@@ -25,11 +27,15 @@ export function createNewWorkoutForDate(
 export function openNewWorkoutDraft(
   setIsNewWorkoutOpen,
   setNewWorkoutExercises,
-  setEditingWorkoutId
+  setEditingWorkoutId,
+  setNewWorkoutTime
 ) {
   setIsNewWorkoutOpen(true);
   setNewWorkoutExercises([]);
   setEditingWorkoutId(null);
+  if (setNewWorkoutTime) {
+    setNewWorkoutTime("");
+  }
 }
 
 export function addExerciseToDraft(setNewWorkoutExercises) {
@@ -61,6 +67,7 @@ export function saveWorkoutDraft({
   selectedDate,
   editingWorkoutId,
   newWorkoutExercises,
+  workoutTime,
   setWorkouts,
   setIsNewWorkoutOpen,
   setNewWorkoutExercises,
@@ -70,14 +77,22 @@ export function saveWorkoutDraft({
 
   if (editingWorkoutId) {
     setWorkouts((prev) =>
-      prev.map((workout) =>
-        workout.id === editingWorkoutId
-          ? { ...workout, exercises: newWorkoutExercises }
-          : workout
-      )
+      prev.map((workout) => {
+        if (workout.id !== editingWorkoutId) return workout;
+        const updated = { ...workout, exercises: newWorkoutExercises };
+        if (typeof workoutTime !== "undefined") {
+          updated.time = workoutTime;
+        }
+        return updated;
+      })
     );
   } else {
-    createNewWorkoutForDate(selectedDate, setWorkouts, newWorkoutExercises);
+    createNewWorkoutForDate(
+      selectedDate,
+      setWorkouts,
+      newWorkoutExercises,
+      workoutTime
+    );
   }
 
   setIsNewWorkoutOpen(false);
@@ -103,7 +118,8 @@ export function startEditingWorkout(
   workout,
   setIsNewWorkoutOpen,
   setEditingWorkoutId,
-  setNewWorkoutExercises
+  setNewWorkoutExercises,
+  setNewWorkoutTime
 ) {
   if (!workout) return;
 
@@ -112,5 +128,8 @@ export function startEditingWorkout(
   setNewWorkoutExercises(
     (workout.exercises || []).map((exercise) => ({ ...exercise }))
   );
+  if (setNewWorkoutTime) {
+    setNewWorkoutTime(workout.time || "");
+  }
 }
 
