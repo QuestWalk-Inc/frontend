@@ -64,6 +64,12 @@ export function updateExerciseInDraft(
   );
 }
 
+export function removeExerciseFromDraft(setNewWorkoutExercises, exerciseId) {
+  setNewWorkoutExercises((prev) =>
+    prev.filter((exercise) => exercise.id !== exerciseId)
+  );
+}
+
 export function saveWorkoutDraft({
   selectedDate,
   editingWorkoutId,

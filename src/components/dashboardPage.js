@@ -5,6 +5,7 @@ import {
   openNewWorkoutDraft,
   addExerciseToDraft,
   updateExerciseInDraft,
+  removeExerciseFromDraft,
   saveWorkoutDraft,
   deleteWorkoutDraft,
   deleteWorkoutById,
@@ -174,6 +175,10 @@ function DashboardPage({ userId, onBack }) {
     updateExerciseInDraft(setNewWorkoutExercises, id, field, value);
   };
 
+  const handleDeleteExercise = (exerciseId) => {
+    removeExerciseFromDraft(setNewWorkoutExercises, exerciseId);
+  };
+
   const handleSaveWorkout = async () => {
     // Compute a concrete workout datetime in ISO, if time is provided
     let workoutDateTimeISO = null;
@@ -207,29 +212,73 @@ function DashboardPage({ userId, onBack }) {
     setSaveError(null);
 
     try {
-      // Send one training row per workout, with all exercises
-      const body = {
-        user_id: Number(userId),
-        date: selectedDate.toISOString(),
-        name_exercise: newWorkoutExercises.map((exercise) => ({
-          exercise_name: exercise.name || "Exercise",
-          // NOTE: backend JSONB uses "reapeats" key
-          reapeats: Number(exercise.repeats || 1),
-          tries: Number(exercise.tries || 1),
-        })),
-      };
+      // Common payload part: exercises array in JSONB format
+      const nameExercisePayload = newWorkoutExercises.map((exercise) => ({
+        exercise_name: exercise.name || "Exercise",
+        // NOTE: backend JSONB uses "reapeats" key
+        reapeats: Number(exercise.repeats || 1),
+        tries: Number(exercise.tries || 1),
+      }));
 
-      if (workoutDateTimeISO) {
-        body.workout_time = workoutDateTimeISO;
+      let response;
+
+      if (editingWorkoutId) {
+        // Update existing workout in DB (PATCH),
+        // matching by original date/time used when it was created.
+        const originalWorkout = workouts.find(
+          (w) => w.id === editingWorkoutId
+        );
+
+        if (originalWorkout && originalWorkout.time) {
+          const dateKey = originalWorkout.dateKey;
+          const payload = {
+            name_exercise: nameExercisePayload,
+          };
+
+          // If user changed time, also update workout_time column
+          if (
+            workoutDateTimeISO &&
+            workoutDateTimeISO !== originalWorkout.time
+          ) {
+            payload.workout_time = workoutDateTimeISO;
+          }
+
+          response = await fetch(
+            `${API_BASE_URL}/trainings/${userId}/${dateKey}/${encodeURIComponent(
+              originalWorkout.time
+            )}`,
+            {
+              method: "PATCH",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(payload),
+            }
+          );
+        } else {
+          // Fallback: if we don't have enough info to PATCH, just save locally
+          response = { ok: true };
+        }
+      } else {
+        // Create a new workout row in DB (POST)
+        const body = {
+          user_id: Number(userId),
+          date: selectedDate.toISOString(),
+          name_exercise: nameExercisePayload,
+        };
+
+        if (workoutDateTimeISO) {
+          body.workout_time = workoutDateTimeISO;
+        }
+
+        response = await fetch(`${API_BASE_URL}/trainings`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(body),
+        });
       }
-
-      const response = await fetch(`${API_BASE_URL}/trainings`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(body),
-      });
 
       if (!response.ok) {
         throw new Error("Failed to save workout to database");
@@ -560,6 +609,14 @@ function DashboardPage({ userId, onBack }) {
                         );
                       })}
                     </select>
+                    <button
+                      type="button"
+                      className="inventory-page__new-workout-delete-exercise"
+                      onClick={() => handleDeleteExercise(exercise.id)}
+                      title="Delete exercise"
+                    >
+                      Delete
+                    </button>
                   </li>
                 ))}
               </ul>
