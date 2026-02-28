@@ -49,7 +49,9 @@ function DashboardPage({ userId, onBack }) {
 
         const data = await response.json();
 
-        // Group trainings by date and workout_time into workouts
+        // Group trainings by date and workout_time into workouts.
+        // Each training now stores exercises in name_exercise JSONB:
+        // [{ exercise_name: string, reapeats: number, tries: number }, ...]
         const workoutsByKey = {};
 
         data.forEach((item, index) => {
@@ -59,7 +61,10 @@ function DashboardPage({ userId, onBack }) {
 
           const dateKey = new Date(item.date).toISOString().slice(0, 10);
           const workoutTime = item.workout_time || null;
-          const key = `${dateKey}-${workoutTime || "notime"}-${index}`;
+
+          // Use DB id when available so we don't collapse distinct workouts
+          const baseKey = `${dateKey}-${workoutTime || "notime"}`;
+          const key = item.id ? `${baseKey}-${item.id}` : `${baseKey}-${index}`;
 
           if (!workoutsByKey[key]) {
             workoutsByKey[key] = {
@@ -71,12 +76,44 @@ function DashboardPage({ userId, onBack }) {
             };
           }
 
-          workoutsByKey[key].exercises.push({
-            id: item.id,
-            name: item.name_exercise || "Exercise",
-            repeats: String(item.repeat ?? 1),
-            tries: String(item.tries ?? 1),
-          });
+          // Normalise name_exercise into an array of exercise objects
+          let rawExercises = [];
+
+          if (Array.isArray(item.name_exercise)) {
+            rawExercises = item.name_exercise;
+          } else if (
+            item.name_exercise &&
+            typeof item.name_exercise === "object"
+          ) {
+            // Single JSON object
+            rawExercises = [item.name_exercise];
+          } else if (typeof item.name_exercise === "string") {
+            // Backwards compatibility: plain string + repeat/tries columns
+            rawExercises = [
+              {
+                exercise_name: item.name_exercise,
+                reapeats: item.repeat ?? 1,
+                tries: item.tries ?? 1,
+              },
+            ];
+          }
+
+          const mappedExercises = rawExercises.map((exercise, exIndex) => ({
+            id: `${item.id || index}-${exIndex}`,
+            name: exercise.exercise_name || "Exercise",
+            repeats: String(
+              typeof exercise.reapeats === "number"
+                ? exercise.reapeats
+                : exercise.repeat ?? item.repeat ?? 1
+            ),
+            tries: String(
+              typeof exercise.tries === "number"
+                ? exercise.tries
+                : item.tries ?? 1
+            ),
+          }));
+
+          workoutsByKey[key].exercises.push(...mappedExercises);
         });
 
         setWorkouts(Object.values(workoutsByKey));
@@ -170,36 +207,31 @@ function DashboardPage({ userId, onBack }) {
     setSaveError(null);
 
     try {
-      const payloads = newWorkoutExercises.map((exercise) => {
-        const body = {
-          user_id: Number(userId),
-          date: selectedDate.toISOString(),
-          name_exercise: exercise.name || "Exercise",
-          repeat: Number(exercise.repeats || 1),
+      // Send one training row per workout, with all exercises
+      const body = {
+        user_id: Number(userId),
+        date: selectedDate.toISOString(),
+        name_exercise: newWorkoutExercises.map((exercise) => ({
+          exercise_name: exercise.name || "Exercise",
+          // NOTE: backend JSONB uses "reapeats" key
+          reapeats: Number(exercise.repeats || 1),
           tries: Number(exercise.tries || 1),
-        };
+        })),
+      };
 
-        if (workoutDateTimeISO) {
-          body.workout_time = workoutDateTimeISO;
-        }
+      if (workoutDateTimeISO) {
+        body.workout_time = workoutDateTimeISO;
+      }
 
-        return body;
+      const response = await fetch(`${API_BASE_URL}/trainings`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
       });
 
-      const responses = await Promise.all(
-        payloads.map((body) =>
-          fetch(`${API_BASE_URL}/trainings`, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(body),
-          })
-        )
-      );
-
-      const failed = responses.find((res) => !res.ok);
-      if (failed) {
+      if (!response.ok) {
         throw new Error("Failed to save workout to database");
       }
 
