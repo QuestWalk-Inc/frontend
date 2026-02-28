@@ -29,7 +29,6 @@ function DashboardPage({ userId, onBack }) {
   const [saveError, setSaveError] = useState(null);
   const [isSaving, setIsSaving] = useState(false);
   const calendarRef = useRef(null);
-  const arrowRef = useRef(null);
 
   // Load workouts from backend so they persist across navigation
   useEffect(() => {
@@ -262,23 +261,18 @@ function DashboardPage({ userId, onBack }) {
     );
   };
 
-  // Центрирование выбранного дня под стрелкой
+  // Center selected day in calendar strip
   useEffect(() => {
-    if (calendarRef.current && arrowRef.current) {
+    if (calendarRef.current) {
       const activeButton = calendarRef.current.querySelector(
         ".inventory-page__calendar-day--active"
       );
       if (activeButton) {
-        // Центрирование полоски календаря
         const scroll =
           activeButton.offsetLeft -
           calendarRef.current.offsetWidth / 2 +
           activeButton.offsetWidth / 2;
         calendarRef.current.scrollLeft = scroll;
-
-        // Стрелка по центру выбранного кружка
-        arrowRef.current.style.left =
-          activeButton.offsetLeft + activeButton.offsetWidth / 2 + "px";
       }
     }
   }, [selectedDate]);
@@ -305,13 +299,10 @@ function DashboardPage({ userId, onBack }) {
       {/* выбранная дата */}
       <div className="inventory-page__calendar-today">{formattedSelectedDate}</div>
 
-      {/* стрелка под датой */}
-      <div className="inventory-page__calendar-selected-arrow" ref={arrowRef}>
-        ▼
-      </div>
-
-      {/* календарная полоска */}
-      <div className="inventory-page__calendar-strip" ref={calendarRef}>
+      {/* calendar wrapper: arrow centered, strip scrolls to center selected day */}
+      <div className="inventory-page__calendar-wrapper">
+        <div className="inventory-page__calendar-selected-arrow">▼</div>
+        <div className="inventory-page__calendar-strip" ref={calendarRef}>
         {days.map((day) => {
           const isSelected = isSameDay(day.date, selectedDate);
           return (
@@ -338,6 +329,7 @@ function DashboardPage({ userId, onBack }) {
             </button>
           );
         })}
+        </div>
       </div>
 
       <div className="inventory-page__content">
@@ -552,19 +544,21 @@ function DashboardPage({ userId, onBack }) {
         )}
       </div>
 
-      {/* BACK кнопка внизу */}
-      <div className="inventory-page__buttons">
-        <button
-          type="button"
-          className="inventory-page__new-workout-button"
-          onClick={handleNewWorkout}
-        >
-          New Workout
-        </button>
-        <button className="inventory-page__back-button" onClick={onBack}>
-          BACK
-        </button>
-      </div>
+      {/* BACK кнопка внизу - hidden when editing workout */}
+      {!editingWorkoutId && (
+        <div className="inventory-page__buttons">
+          <button
+            type="button"
+            className="inventory-page__new-workout-button"
+            onClick={handleNewWorkout}
+          >
+            New Workout
+          </button>
+          <button className="inventory-page__back-button" onClick={onBack}>
+            BACK
+          </button>
+        </div>
+      )}
     </div>
   );
 }

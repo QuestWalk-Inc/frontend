@@ -80,13 +80,23 @@
   letter-spacing: 0.08em;
 }
 
-/* стрелка под датой */
+/* calendar wrapper: arrow centered, strip scrolls */
+.inventory-page__calendar-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+/* стрелка под датой - always centered regardless of screen */
 .inventory-page__calendar-selected-arrow {
-  text-align: center;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 0;
   font-size: clamp(14px, 2.2vw, 20px);
   color: #ffd700;
   margin-bottom: clamp(8px, 1.8vw, 16px);
   pointer-events: none;
+  z-index: 1;
 }
 
 /* календарная полоса */
@@ -97,6 +107,7 @@
   gap: clamp(10px, 1.8vw, 16px);
   overflow-x: auto;
   overflow-y: hidden;
+  padding-top: clamp(24px, 4vw, 32px);
   padding-bottom: clamp(14px, 2vw, 20px);
   padding-inline: clamp(4px, 1vw, 8px);
   scroll-behavior: smooth;
