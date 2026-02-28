@@ -1,3 +1,49 @@
+/* Base page layout */
+.inventory-page {
+  width: 100%;
+  min-height: 100vh;
+  max-width: 100vw;
+  overflow-x: hidden;
+  box-sizing: border-box;
+  padding: clamp(8px, 2vw, 16px);
+  padding-bottom: clamp(100px, 15vw, 140px);
+}
+
+.inventory-page__header {
+  text-align: center;
+  margin-bottom: clamp(8px, 2vw, 16px);
+}
+
+.inventory-page__title {
+  font-family: 'Press Start 2P', cursive;
+  font-size: clamp(14px, 3.5vw, 24px);
+  color: #ffd700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.inventory-page__error-message {
+  color: #ff6b6b;
+  font-size: clamp(9px, 1.5vw, 12px);
+  margin-bottom: clamp(8px, 1.5vw, 12px);
+  font-family: 'Press Start 2P', cursive;
+}
+
+.inventory-page__new-workout-time-row {
+  margin-bottom: clamp(10px, 2vw, 16px);
+}
+
+.inventory-page__new-workout-time-label {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(4px, 1vw, 8px);
+  font-family: 'Press Start 2P', cursive;
+  font-size: clamp(8px, 1.4vw, 12px);
+  color: #ffd700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
 /* TODAY button между DASHBOARD и датой */
 .inventory-page__calendar-today-button-wrapper {
   display: flex;
@@ -47,11 +93,15 @@
 .inventory-page__calendar-strip {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   gap: clamp(10px, 1.8vw, 16px);
   overflow-x: auto;
+  overflow-y: hidden;
   padding-bottom: clamp(14px, 2vw, 20px);
+  padding-inline: clamp(4px, 1vw, 8px);
   scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  max-width: 100%;
 }
 
 /* календарные кружки, остальные стили как раньше */
@@ -496,4 +546,138 @@
 .inventory-page__content,
 .inventory-page__workout-exercise {
   font-family: 'Press Start 2P', cursive;
+}
+
+/* ========== RESPONSIVE MEDIA QUERIES ========== */
+
+/* Extra small phones (320px - 480px) */
+@media (max-width: 480px) {
+  .inventory-page {
+    padding-inline: clamp(8px, 3vw, 12px);
+    padding-bottom: 110px;
+  }
+
+  .inventory-page__calendar-day {
+    min-width: 36px;
+  }
+
+  .inventory-page__calendar-day-circle {
+    width: 28px;
+    height: 28px;
+    font-size: 9px;
+  }
+
+  .inventory-page__calendar-day-label {
+    font-size: 7px;
+  }
+
+  .inventory-page__calendar-strip {
+    gap: 8px;
+    padding-inline: 8px;
+  }
+
+  .inventory-page__new-workout-exercise-row {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .inventory-page__workout-action-button,
+  .inventory-page__new-workout-save-button,
+  .inventory-page__new-workout-delete-button {
+    min-width: 100%;
+  }
+
+  .inventory-page__buttons {
+    flex-direction: column;
+    gap: 12px;
+    padding-inline: 12px;
+  }
+
+  .inventory-page__back-button,
+  .inventory-page__new-workout-button {
+    min-width: 100%;
+    max-width: 100%;
+    font-size: 10px;
+    padding: 10px 16px;
+  }
+}
+
+/* Phones landscape / small tablets (481px - 768px) */
+@media (min-width: 481px) and (max-width: 768px) {
+  .inventory-page__new-workout-exercise-row {
+    grid-template-columns: 1.5fr 1fr 1fr auto;
+  }
+
+  .inventory-page__buttons {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 16px;
+  }
+
+  .inventory-page__back-button,
+  .inventory-page__new-workout-button {
+    flex: 1;
+    min-width: 140px;
+    max-width: 200px;
+  }
+}
+
+/* Tablets (769px - 1024px) */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .inventory-page {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .inventory-page__buttons {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 24px;
+  }
+
+  .inventory-page__back-button,
+  .inventory-page__new-workout-button {
+    flex: 0 1 auto;
+    min-width: 180px;
+  }
+}
+
+/* Desktop (1025px+) */
+@media (min-width: 1025px) {
+  .inventory-page {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .inventory-page__content {
+    max-width: 100%;
+  }
+
+  .inventory-page__buttons {
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: center;
+    gap: 32px;
+  }
+}
+
+/* Safe area for notched devices (iPhone X+, etc.) */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  .inventory-page {
+    padding-bottom: calc(100px + env(safe-area-inset-bottom));
+  }
+
+  .inventory-page__buttons {
+    bottom: calc(16px + env(safe-area-inset-bottom));
+  }
+}
+
+/* Prevent text overflow on small screens */
+.inventory-page__workout-label,
+.inventory-page__workout-exercise-name,
+.inventory-page__calendar-today {
+  overflow-wrap: break-word;
+  word-break: break-word;
 }

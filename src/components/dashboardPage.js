@@ -440,7 +440,7 @@ function DashboardPage({ userId, onBack }) {
 
             <div className="inventory-page__new-workout-time-row">
               <label className="inventory-page__new-workout-time-label">
-                Time:
+                Select a time:
                 <input
                   type="time"
                   className="inventory-page__new-workout-input"
