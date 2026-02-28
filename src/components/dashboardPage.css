@@ -162,8 +162,20 @@
   gap: clamp(8px, 1.6vw, 14px);
 }
 
+.inventory-page__workout-title-group {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: clamp(2px, 0.6vw, 4px);
+}
+
 .inventory-page__workout-label {
   font-size: clamp(9px, 1.6vw, 13px);
+}
+
+.inventory-page__workout-time {
+  font-size: clamp(8px, 1.4vw, 11px);
+  opacity: 0.8;
 }
 
 .inventory-page__workout-number-circle {
@@ -441,4 +453,31 @@
 .inventory-page__new-workout-save-button:active,
 .inventory-page__new-workout-delete-button:active {
   transform: translateY(1px) scale(0.995);
+}
+
+/* unified one-pixel style for dashboard controls */
+.inventory-page__calendar-today-button,
+.inventory-page__workout-action-button,
+.inventory-page__new-workout-add-exercise,
+.inventory-page__new-workout-save-button,
+.inventory-page__new-workout-delete-button,
+.inventory-page__back-button,
+.inventory-page__new-workout-button {
+  font-family: 'Press Start 2P', cursive;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  border-radius: 0;
+  border-width: 1px;
+}
+
+.inventory-page__new-workout-input,
+.inventory-page__new-workout-select {
+  font-family: 'Press Start 2P', cursive;
+  border-radius: 0;
+  border-width: 1px;
+}
+
+.inventory-page__content,
+.inventory-page__workout-exercise {
+  font-family: 'Press Start 2P', cursive;
 }

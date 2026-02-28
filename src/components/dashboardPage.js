@@ -368,15 +368,34 @@ function DashboardPage({ userId, onBack }) {
               .map((workout, index) => {
                 const [label, number] = (workout.name || "").split(" ");
                 const exercises = workout.exercises || [];
+                const workoutTimeLabel =
+                  workout.time &&
+                  (() => {
+                    try {
+                      return new Date(workout.time).toLocaleTimeString([], {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      });
+                    } catch {
+                      return null;
+                    }
+                  })();
                 return (
                   <li
                     key={workout.id}
                     className="inventory-page__workout-item"
                   >
                     <div className="inventory-page__workout-header">
-                      <span className="inventory-page__workout-label">
-                        {label || "Workout"}
-                      </span>
+                      <div className="inventory-page__workout-title-group">
+                        <span className="inventory-page__workout-label">
+                          {label || "Workout"}
+                        </span>
+                        {workoutTimeLabel && (
+                          <span className="inventory-page__workout-time">
+                            {workoutTimeLabel}
+                          </span>
+                        )}
+                      </div>
                       <span className="inventory-page__workout-number-circle">
                         {number || index + 1}
                       </span>
