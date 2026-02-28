@@ -199,8 +199,36 @@ function DashboardPage({ userId, onBack }) {
     );
   };
 
-  const handleDeleteWorkout = (workoutId) => {
-    deleteWorkoutById(setWorkouts, workoutId);
+  const handleDeleteWorkout = async (workout) => {
+    // Optimistically remove from UI
+    deleteWorkoutById(setWorkouts, workout.id);
+
+    if (!userId || !workout?.dateKey) {
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `${API_BASE_URL}/trainings/${userId}/${workout.dateKey}`,
+        {
+          method: "DELETE",
+        }
+      );
+
+      if (response.status === 404) {
+        // Nothing to delete in DB (already gone)
+        return;
+      }
+
+      if (!response.ok) {
+        throw new Error("Failed to delete workout from database");
+      }
+    } catch (error) {
+      console.error(error);
+      setSaveError(
+        error.message || "Unknown error while deleting workout from database"
+      );
+    }
   };
 
   const handleEditWorkout = (workout) => {
@@ -352,7 +380,7 @@ function DashboardPage({ userId, onBack }) {
                       <button
                         type="button"
                         className="inventory-page__workout-action-button inventory-page__workout-action-button--delete"
-                        onClick={() => handleDeleteWorkout(workout.id)}
+                        onClick={() => handleDeleteWorkout(workout)}
                       >
                         Delete workout
                       </button>
