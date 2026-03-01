@@ -30,8 +30,10 @@
 }
 
 .inventory-page__new-workout-time-row {
-  margin-bottom: clamp(10px, 2vw, 16px);
+  width: 100%;
+  max-width: 100%;
 }
+
 
 .inventory-page__new-workout-time-label {
   display: flex;
@@ -40,6 +42,7 @@
   font-family: 'Press Start 2P', cursive;
   font-size: clamp(8px, 1.4vw, 12px);
   color: #ffd700;
+  width: 100%;
   text-transform: uppercase;
   letter-spacing: 0.08em;
 }
@@ -237,6 +240,9 @@
 .inventory-page__workout-time {
   font-size: clamp(8px, 1.4vw, 11px);
   opacity: 0.8;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .inventory-page__workout-number-circle {
@@ -563,9 +569,9 @@
 
 /* Extra small phones (320px - 480px) */
 @media (max-width: 480px) {
-  .inventory-page {
-    padding-inline: clamp(8px, 3vw, 12px);
-    padding-bottom: 110px;
+  .inventory-page__new-workout-exercise-row {
+    grid-template-columns: 2fr 1fr 1fr auto;
+    gap: 6px;
   }
 
   .inventory-page__calendar-day {
