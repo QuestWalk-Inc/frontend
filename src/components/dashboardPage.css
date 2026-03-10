@@ -32,7 +32,7 @@
 .inventory-page__new-workout-time-box {
   width: 100%;
   max-width: 100%;
-  padding: clamp(10px, 2vw, 16px);
+  padding: clamp(8px, 1.6vw, 12px);
   border: 1px dashed rgba(255, 215, 0, 0.6);
   border-radius: 6px;
   background-color: rgba(0, 0, 0, 0.3);
@@ -42,13 +42,19 @@
 .inventory-page__new-workout-time-label {
   display: flex;
   flex-direction: column;
-  gap: clamp(4px, 1vw, 8px);
+  gap: clamp(3px, 0.8vw, 6px);
   font-family: 'Press Start 2P', cursive;
   font-size: clamp(8px, 1.4vw, 12px);
   color: #ffd700;
   width: 100%;
   text-transform: uppercase;
   letter-spacing: 0.08em;
+}
+
+.inventory-page__new-workout-time-label input[type="time"] {
+  padding: clamp(4px, 1vw, 6px) clamp(6px, 1.5vw, 8px);
+  font-size: clamp(9px, 1.6vw, 12px);
+  min-height: clamp(30px, 5vw, 36px);
 }
 
 /* TODAY button между DASHBOARD и датой */
