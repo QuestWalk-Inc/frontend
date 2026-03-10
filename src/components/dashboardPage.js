@@ -430,7 +430,7 @@ function DashboardPage({ userId, onBack }) {
               {editingWorkoutId ? "Edit Workout" : "New Workout"}
             </div>
 
-            <div className="inventory-page__new-workout-time-row">
+            <div className="inventory-page__new-workout-time-box">
               <label className="inventory-page__new-workout-time-label">
                 Select a time:
                 <input
@@ -441,14 +441,6 @@ function DashboardPage({ userId, onBack }) {
                 />
               </label>
             </div>
-
-            <button
-              type="button"
-              className="inventory-page__new-workout-add-exercise"
-              onClick={handleAddExercise}
-            >
-              Add new exercise +
-            </button>
 
             {newWorkoutExercises.length > 0 && (
               <ul className="inventory-page__new-workout-exercises">
@@ -522,6 +514,14 @@ function DashboardPage({ userId, onBack }) {
                 ))}
               </ul>
             )}
+
+            <button
+              type="button"
+              className="inventory-page__new-workout-add-exercise"
+              onClick={handleAddExercise}
+            >
+              Add new exercise +
+            </button>
 
             <div className="inventory-page__new-workout-actions">
               <button
