@@ -452,7 +452,7 @@ function DashboardPage({ userId, onBack }) {
                     <input
                       type="text"
                       className="inventory-page__new-workout-input"
-                      placeholder="Exercise name"
+                      placeholder="Name"
                       value={exercise.name}
                       onChange={(e) =>
                         handleExerciseChange(
@@ -478,7 +478,7 @@ function DashboardPage({ userId, onBack }) {
                         const value = String(idx + 1);
                         return (
                           <option key={value} value={value}>
-                            {value}
+                            {value}x
                           </option>
                         );
                       })}
@@ -499,7 +499,7 @@ function DashboardPage({ userId, onBack }) {
                         const value = String(idx + 1);
                         return (
                           <option key={value} value={value}>
-                            {value}
+                            {value}t
                           </option>
                         );
                       })}

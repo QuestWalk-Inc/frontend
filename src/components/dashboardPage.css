@@ -32,32 +32,37 @@
 .inventory-page__new-workout-time-box {
   width: 100%;
   max-width: 100%;
-  padding: clamp(8px, 1.6vw, 12px);
+  padding: clamp(12px, 2.4vw, 18px);
   border: 1px dashed rgba(255, 215, 0, 0.6);
   border-radius: 6px;
   background-color: rgba(0, 0, 0, 0.3);
   margin-bottom: clamp(12px, 2.4vw, 18px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .inventory-page__new-workout-time-label {
   display: flex;
   flex-direction: column;
-  gap: clamp(3px, 0.8vw, 6px);
+  gap: clamp(6px, 1.2vw, 10px);
   font-family: 'Press Start 2P', cursive;
-  font-size: clamp(8px, 1.4vw, 12px);
+  font-size: clamp(10px, 1.8vw, 14px);
   color: #ffd700;
   width: 100%;
   text-transform: uppercase;
   letter-spacing: 0.08em;
+  align-items: center;
+  text-align: center;
 }
 
 .inventory-page__new-workout-time-label input[type="time"] {
-  padding: clamp(4px, 1vw, 6px) clamp(6px, 1.5vw, 8px);
-  font-size: clamp(9px, 1.6vw, 12px);
-  min-height: clamp(30px, 5vw, 36px);
+  padding: clamp(6px, 1.2vw, 10px) clamp(10px, 2vw, 16px);
+  font-size: clamp(12px, 2vw, 16px);
+  min-height: clamp(36px, 6vw, 44px);
   width: auto;
-  max-width: 140px;
-  align-self: flex-start;
+  max-width: 200px;
+  align-self: center;
 }
 
 /* TODAY button между DASHBOARD и датой */
