@@ -60,9 +60,9 @@
   padding: clamp(6px, 1.2vw, 10px) clamp(10px, 2vw, 16px);
   font-size: clamp(12px, 2vw, 16px);
   min-height: clamp(36px, 6vw, 44px);
-  width: auto;
-  max-width: 200px;
-  align-self: center;
+  width: 100%;
+  max-width: 100%;
+  align-self: stretch;
 }
 
 /* TODAY button между DASHBOARD и датой */
