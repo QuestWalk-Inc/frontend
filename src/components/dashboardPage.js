@@ -472,12 +472,13 @@ function DashboardPage({ userId, onBack }) {
                           e.target.value
                         )
                       }
+                      aria-label="Repeats"
                     >
                       {[...Array(20)].map((_, idx) => {
                         const value = String(idx + 1);
                         return (
                           <option key={value} value={value}>
-                            {value} repeats
+                            {value}
                           </option>
                         );
                       })}
@@ -492,12 +493,13 @@ function DashboardPage({ userId, onBack }) {
                           e.target.value
                         )
                       }
+                      aria-label="Tries"
                     >
                       {[...Array(10)].map((_, idx) => {
                         const value = String(idx + 1);
                         return (
                           <option key={value} value={value}>
-                            {value} tries
+                            {value}
                           </option>
                         );
                       })}
@@ -507,8 +509,9 @@ function DashboardPage({ userId, onBack }) {
                       className="inventory-page__new-workout-delete-exercise"
                       onClick={() => handleDeleteExercise(exercise.id)}
                       title="Delete exercise"
+                      aria-label="Delete exercise"
                     >
-                      Delete
+                      ×
                     </button>
                   </li>
                 ))}
